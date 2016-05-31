@@ -141,7 +141,7 @@ def get_basic_info(req)
               marvel_res["data"]["results"][0]["thumbnail"]["extension"]
   end
   # Turn http to https
-  unless pic_url == nil || pic_url.start_with?("https")
+  unless pic_url != nil && pic_url.start_with?("https")
     pic_url = "https" + pic_url[4..-1]
   end
 
