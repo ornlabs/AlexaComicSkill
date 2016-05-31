@@ -4,6 +4,7 @@ require 'rest-client'
 require 'sinatra'
 
 require './apis/marvel'
+require './apis/comic_vine'
 
 configure do
   set :root, File.dirname(__FILE__)
@@ -139,8 +140,8 @@ def get_basic_info(req)
               marvel_res["data"]["results"][0]["thumbnail"]["extension"]
   end
   # Turn http to https
-  unless thumbnail.start_with?("https")
-    thumbnail = "https" + thumbnail[4..-1]
+  unless pic_url.start_with?("https")
+    pic_url = "https" + pic_url[4..-1]
   end
 
   res = build_res_obj(subject, description, attribution, pic_url)
