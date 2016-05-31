@@ -10,51 +10,53 @@ configure do
 end
 
 post '/' do
-  request.body.rewind
-  request_payload = JSON.parse request.body.read
+  begin
+    request.body.rewind
+    request_payload = JSON.parse request.body.read
 
-  puts "REQUEST:\n"
-  puts request_payload
+    puts "REQUEST:\n"
+    puts request_payload
 
-  if request_payload['request']['type'] == 'LaunchRequest'
-    launch_response = {
+    if request_payload['request']['type'] == 'LaunchRequest'
+      launch_response = {
+        "version" => "1.0",
+        "response" => {
+          "outputSpeech" => {
+            "type" => "PlainText",
+            "text" => "What would you like to know?"
+          },
+          "shouldEndSession" => false
+        }
+      }
+      return JSON.generate(launch_response)
+    else
+      # Get intent, send to appropriate method.
+      intent = request_payload['request']['intent']['name']
+
+      if intent == "GetBasicInfo"
+        res = get_basic_info(request_payload)
+      else
+        res = JSON.generate(build_res_obj("Error",
+              "I'm sorry, I'm not sure what you meant."))
+      end
+
+      return res
+    end
+  rescue => e
+    puts "ERROR\n" + e.message
+
+    error_response = {
       "version" => "1.0",
       "response" => {
         "outputSpeech" => {
           "type" => "PlainText",
-          "text" => "What would you like to know?"
+          "text" => "I'm sorry, there was an error."
         },
-        "shouldEndSession" => false
+        "shouldEndSession" => true
       }
     }
-    return JSON.generate(launch_response)
-  else
-    # Get intent, send to appropriate method.
-    intent = request_payload['request']['intent']['name']
-
-    if intent == "GetBasicInfo"
-      res = get_basic_info(request_payload)
-    else
-      res = JSON.generate(build_res_obj("Error",
-            "I'm sorry, I'm not sure what you meant."))
-    end
-
-    return res
+    return JSON.generate(error_response)
   end
-rescue => e
-  puts "ERROR\n" + e.message
-
-  error_response = {
-    "version" => "1.0",
-    "response" => {
-      "outputSpeech" => {
-        "type" => "PlainText",
-        "text" => "I'm sorry, there was an error."
-      },
-      "shouldEndSession" => true
-    }
-  }
-  return JSON.generate(error_response)
 end
 
 def get_basic_info(req)
