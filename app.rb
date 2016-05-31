@@ -119,8 +119,8 @@ def get_basic_info(req)
   ## Description
   if marvel_found && marvel_res["data"]["results"][0]["description"] != ""
     description = marvel_res["data"]["results"][0]["description"]
-  elsif cv_found && cv_res[deck] != nil
-    description = cv_res[deck]
+  elsif cv_found && cv_res["deck"] != nil
+    description = cv_res["deck"]
   else
     description = "No description is available for #{subject}."
   end
