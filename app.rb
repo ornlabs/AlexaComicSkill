@@ -44,7 +44,7 @@ post '/' do
       return res
     end
   rescue => e
-    puts "ERROR\n" + e.message
+    puts "ERROR\n" + e.message + "\n" + e.backtrace
 
     error_response = {
       "version" => "1.0",
@@ -98,7 +98,7 @@ def get_basic_info(req)
 
     unless cv_res["number_of_page_results"] == 0
       cv_found = true
-      cv_res = cv.get_single_result(cv_res)
+      cv_res = cv.get_single_result(cv_res, subject)
     end
   rescue NameError => e
     puts "Error while examining Comic Vine API response.\n" + e.message

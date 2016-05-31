@@ -21,7 +21,7 @@ class ComicVine
 
   end
 
-  def get_single_result(search_results)
+  def get_single_result(search_results, query)
     result_index = search_results["results"].index{ |result|
       result["name"].downcase == query.downcase
     }
