@@ -97,7 +97,7 @@ def get_basic_info(req)
     cv = ComicVine.new
     cv_res = cv.search("character", subject)
 
-    unless cv_res["number_of_page_results"] == 0
+    if cv_res["number_of_page_results"] > 0
       cv_found = true
       cv_res = cv.get_single_result(cv_res, subject)
     end
