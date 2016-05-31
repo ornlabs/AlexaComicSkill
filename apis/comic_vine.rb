@@ -13,6 +13,8 @@ class ComicVine
       "query" => query
     }
 
+    puts params
+
     return JSON.parse((RestClient.get request_url, params).body)
 
   end
