@@ -4,7 +4,7 @@ class ComicVine
 
   def search(resource_type, query)
 
-    request_url = "http://comicvine.gamespot.com/api/"
+    request_url = "http://comicvine.gamespot.com/api/search/"
 
     params = {
       "api_key" => ENV['COMIC_VINE_KEY'],
