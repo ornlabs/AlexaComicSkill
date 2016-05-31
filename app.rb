@@ -44,7 +44,8 @@ post '/' do
       return res
     end
   rescue => e
-    puts "ERROR\n" + e.message + "\n" + e.backtrace
+    puts "ERROR\n" + e.message
+    puts e.backtrace
 
     error_response = {
       "version" => "1.0",
