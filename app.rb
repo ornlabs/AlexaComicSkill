@@ -66,7 +66,7 @@ def get_basic_info(req)
   subject = req['request']['intent']['slots']['Character']['value']
   description = ""
   attribution = ""
-  pic_url = ""
+  pic_url = nil
   card_text = ""
 
   # Query different sources for matches.
@@ -141,7 +141,7 @@ def get_basic_info(req)
               marvel_res["data"]["results"][0]["thumbnail"]["extension"]
   end
   # Turn http to https
-  unless pic_url != nil && pic_url.start_with?("https")
+  if pic_url != nil && !(pic_url.start_with?("https"))
     pic_url = "https" + pic_url[4..-1]
   end
 
