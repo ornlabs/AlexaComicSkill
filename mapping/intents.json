@@ -1,0 +1,13 @@
+{
+  "intents": [
+    {
+      "intent": "GetBasicInfo",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    }
+  ]
+}

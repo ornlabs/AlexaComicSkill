@@ -1,0 +1,3 @@
+GetBasicInfo tell me about {Character}
+GetBasicInfo who is {Character}
+GetBasicInfo who {Character} is
