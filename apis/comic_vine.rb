@@ -13,7 +13,9 @@ class ComicVine
       "query" => query
     }
 
-    puts params
+    params = {
+      :params => params
+    }
 
     return JSON.parse((RestClient.get request_url, params).body)
 
