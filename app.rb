@@ -18,19 +18,38 @@ post '/' do
     puts "REQUEST:\n"
     puts request_payload
 
-    if request_payload['request']['type'] == 'LaunchRequest'
+    req_app_id = request_payload["session"]["application"]["applicationID"]
+
+    # Send error message if request is not from our skill.
+    if req_app_id != ENV['ALEXA_APP_ID']
+      puts "ERROR: Incorrect App ID: " + req_app_id
+      incorrect_app_id_response = {
+        "version" => "1.0",
+        "response" => {
+          "outputSpeech" => {
+            "type" => "PlainText",
+            "text" => "This skill is incorrectly configured. Please contact " +
+                      "the creator."
+          },
+          "shouldEndSession" => true
+        }
+      }
+      return JSON.generate(incorrect_app_id_response)
+    # Launch request (no intent).
+    elsif request_payload['request']['type'] == 'LaunchRequest'
       launch_response = {
         "version" => "1.0",
         "response" => {
           "outputSpeech" => {
             "type" => "PlainText",
-            "text" => "What would you like to know?"
+            "text" => "Welcome to Comic Info. What would you like to know?"
           },
           "shouldEndSession" => false
         }
       }
       return JSON.generate(launch_response)
-    else
+    # Intent Request
+    elsif request_payload['request']['type'] == 'IntentRequest'
       # Get intent, send to appropriate method.
       intent = request_payload['request']['intent']['name']
 
@@ -40,8 +59,11 @@ post '/' do
         res = JSON.generate(build_res_obj("Error",
               "I'm sorry, I'm not sure what you meant."))
       end
-
       return res
+    # SessionEndedRequest, no action needed
+    else
+      puts "Session Ended."
+      return ""
     end
   rescue => e
     puts "ERROR\n" + e.message
