@@ -68,9 +68,7 @@ post '/' do
   end
 end
 
-def find_character(req)
-  subject = unposs(req['request']['intent']['slots']['Character']['value'])
-
+def find_character(subject)
   # Query different sources for matches.
   ## Marvel
   marvel_found = false
@@ -117,7 +115,7 @@ def get_basic_info(req)
   pic_url = nil
   card_text = ""
 
-  marvel_res, marvel_found, cv_res, cv_found = find_character(req)
+  marvel_res, marvel_found, cv_res, cv_found = find_character(subject)
 
   # Review results from APIs, and decide what to return.
   res = {}
@@ -167,18 +165,16 @@ end
 
 def get_birth_date(req)
   req_char_val = req['request']['intent']['slots']['Character']['value']
-  # If the intent did not include a character name, "Character" is passed
-  # where the name would have been.
-  if req_char_val == "Character" && !(req["sessionAttributes"].key?("subject"))
+  if req_char_val == nil && !(req["sessionAttributes"].key?("subject"))
     no_sub_mess = "I'm sorry, I'm don't know what you meant."
     return JSON.generate(build_end_res_obj(no_sub_mess))
-  elsif req_char_val == "Character"
+  elsif req_char_val == nil
     subject = req["sessionAttributes"]["subject"]
   else
     subject = req_char_val
   end
 
-  marvel_res, marvel_found, cv_res, cv_found = find_character(req)
+  marvel_res, marvel_found, cv_res, cv_found = find_character(subject)
 
   if !cv_found || cv_res["birth"] == nil
     return JSON.generate(build_res_obj("Unknown Birth Date for #{subject}",
