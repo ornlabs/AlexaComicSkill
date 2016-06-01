@@ -85,7 +85,7 @@ end
 
 def get_basic_info(req)
 
-  subject = req['request']['intent']['slots']['Character']['value']
+  subject = unposs(req['request']['intent']['slots']['Character']['value'])
   description = ""
   attribution = ""
   pic_url = nil
@@ -210,4 +210,14 @@ def build_res_obj(card_title, speech_text, attribution = "", card_image = nil, c
   end
 
   return res
+end
+
+# Remove the 's or ' from the end of the passed string. (Un-poss[essive])
+def unposs(str)
+  if str.end_with?("'s")
+    return str[0...-2]
+  elsif str.end_with("'")
+    return str[0...-1]
+  end
+  return str
 end
