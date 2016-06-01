@@ -252,7 +252,7 @@ end
 def unposs(str)
   if str.end_with?("'s")
     return str[0...-2]
-  elsif str.end_with("'")
+  elsif str.end_with?("'")
     return str[0...-1]
   end
   return str
