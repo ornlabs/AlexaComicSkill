@@ -171,7 +171,7 @@ def get_birth_date(req)
   elsif req_char_val == nil
     subject = req["session"]["attributes"]["subject"]
   else
-    subject = req_char_val
+    subject = unposs(req_char_val)
   end
 
   marvel_res, marvel_found, cv_res, cv_found = find_character(subject)
