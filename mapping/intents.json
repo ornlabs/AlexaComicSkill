@@ -17,6 +17,12 @@
           "type": "COMIC_CHARACTERS"
         }
       ]
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
     }
   ]
 }

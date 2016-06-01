@@ -1,8 +1,5 @@
 class ComicVine
-  def initialize()
-  end
-
-  def search(resource_type, query)
+  def self.search(resource_type, query)
 
     request_url = "http://comicvine.gamespot.com/api/search/"
 
@@ -21,7 +18,7 @@ class ComicVine
 
   end
 
-  def get_single_result(search_results, query)
+  def self.get_single_result(search_results, query)
     result_index = search_results["results"].index{ |result|
       result["name"].downcase == query.downcase
     }

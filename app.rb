@@ -23,18 +23,9 @@ post '/' do
     # Send error message if request is not from our skill.
     if req_app_id != ENV['ALEXA_APP_ID']
       puts "ERROR: Incorrect App ID: " + req_app_id
-      incorrect_app_id_response = {
-        "version" => "1.0",
-        "response" => {
-          "outputSpeech" => {
-            "type" => "PlainText",
-            "text" => "This skill is incorrectly configured. Please contact " +
-                      "the creator."
-          },
-          "shouldEndSession" => true
-        }
-      }
-      return JSON.generate(incorrect_app_id_response)
+      incorrect_app_id_message = "This skill is incorrectly configured. " +
+                                 "Please contact the skill creator."
+      return JSON.generate(build_end_res_obj(incorrect_app_id_message))
     # Launch request (no intent).
     elsif request_payload['request']['type'] == 'LaunchRequest'
       launch_response = {
@@ -55,6 +46,10 @@ post '/' do
 
       if intent == "GetBasicInfo"
         res = get_basic_info(request_payload)
+      elsif intent == "GetBirthDate"
+        res = get_birth_date(request_payload)
+      elsif intent == "AMAZON.StopIntent" || intent == "AMAZON.CancelIntent"
+        res = end_session(request_payload)
       else
         res = JSON.generate(build_res_obj("Error",
               "I'm sorry, I'm not sure what you meant."))
@@ -69,27 +64,12 @@ post '/' do
     puts "ERROR\n" + e.message
     puts e.backtrace
 
-    error_response = {
-      "version" => "1.0",
-      "response" => {
-        "outputSpeech" => {
-          "type" => "PlainText",
-          "text" => "I'm sorry, there was an error."
-        },
-        "shouldEndSession" => true
-      }
-    }
-    return JSON.generate(error_response)
+    return JSON.generate(build_end_res_obj("I'm sorry, there was an error."))
   end
 end
 
-def get_basic_info(req)
-
+def find_character(req)
   subject = unposs(req['request']['intent']['slots']['Character']['value'])
-  description = ""
-  attribution = ""
-  pic_url = nil
-  card_text = ""
 
   # Query different sources for matches.
   ## Marvel
@@ -100,8 +80,7 @@ def get_basic_info(req)
   }
 
   begin
-    marvel = Marvel.new
-    marvel_res = marvel.query("characters", params)
+    marvel_res = Marvel.query("characters", params)
 
     if marvel_res["code"] == 200 && marvel_res["data"]["total"] > 0
       marvel_found = true
@@ -116,18 +95,29 @@ def get_basic_info(req)
   cv_found = false
 
   begin
-    cv = ComicVine.new
-    cv_res = cv.search("character", subject)
+    cv_res = ComicVine.search("character", subject)
 
     if cv_res["number_of_page_results"] > 0
       cv_found = true
-      cv_res = cv.get_single_result(cv_res, subject)
+      cv_res = ComicVine.get_single_result(cv_res, subject)
     end
   rescue NameError => e
     puts "Error while examining Comic Vine API response.\n" + e.message
   rescue RestClient::ResourceNotFound => e
     puts "Error calling Comic Vine API.\n" + e.response
   end
+
+  return marvel_res, marvel_found, cv_res, cv_found
+end
+
+def get_basic_info(req)
+  subject = unposs(req['request']['intent']['slots']['Character']['value'])
+  description = ""
+  attribution = ""
+  pic_url = nil
+  card_text = ""
+
+  marvel_res, marvel_found, cv_res, cv_found = find_character(req)
 
   # Review results from APIs, and decide what to return.
   res = {}
@@ -168,13 +158,46 @@ def get_basic_info(req)
   end
 
   res = build_res_obj(subject, description, attribution, pic_url)
+  res["sessionAttributes"] = {
+    "subject" => subject
+  }
+
   return JSON.generate(res)
+end
+
+def get_birth_date(req)
+  req_char_val = req['request']['intent']['slots']['Character']['value']
+  # If the intent did not include a character name, "Character" is passed
+  # where the name would have been.
+  if req_char_val == "Character" && !(req["sessionAttributes"].key?("subject"))
+    no_sub_mess = "I'm sorry, I'm don't know what you meant."
+    return JSON.generate(build_end_res_obj(no_sub_mess))
+  elsif req_char_val == "Character"
+    subject = req["sessionAttributes"]["subject"]
+  else
+    subject = req_char_val
+  end
+
+  marvel_res, marvel_found, cv_res, cv_found = find_character(req)
+
+  if !cv_found || cv_res["birth"] == nil
+    return JSON.generate(build_res_obj("Unknown Birth Date for #{subject}",
+           "I could not find a birth date for #{subject}."))
+  else
+    return JSON.generate(build_res_obj("#{subject} was born on #{cv_res["birth"]}.",
+           "#{subject} was born on #{cv_res["birth"]}.",
+           "Sources:\nComic Vine | http://comicvine.gamespot.com"))
+end
+
+def end_session(req)
+  return JSON.generate(build_end_res_obj("Good-bye!"))
 end
 
 # attribution, card_text, and card_image are optional.
 # If nothing is passed, card_text will be the same as speech_text.
 # For no card text, pass an empty string.
-def build_res_obj(card_title, speech_text, attribution = "", card_image = nil, card_text = nil)
+def build_res_obj(card_title, speech_text, attribution = "", card_image = nil,\
+                  card_text = nil)
   res = {
     "version" => "1.0",
     "response" => {
@@ -185,7 +208,7 @@ def build_res_obj(card_title, speech_text, attribution = "", card_image = nil, c
       "card" => {
         "title" => card_title
       },
-      "shouldEndSession" => true
+      "shouldEndSession" => false
     }
   }
 
@@ -206,10 +229,22 @@ def build_res_obj(card_title, speech_text, attribution = "", card_image = nil, c
     res["response"]["card"]["image"] = {
       "largeImageUrl" => card_image
     }
-
   end
 
   return res
+end
+
+def build_end_res_obj(speech_text)
+  return {
+    "version" => "1.0",
+    "response" => {
+      "outputSpeech" => {
+        "type" => "PlainText",
+        "text" => speech_text
+      },
+      "shouldEndSession" => true
+    }
+  }
 end
 
 # Remove the 's or ' from the end of the passed string. (Un-poss[essive])

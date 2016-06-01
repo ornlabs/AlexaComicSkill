@@ -1,8 +1,5 @@
 class Marvel
-  def initialize()
-  end
-
-  def query(path, params)
+  def self.query(path, params)
 
     request_url = "http://gateway.marvel.com:80/v1/public/" + path
 
