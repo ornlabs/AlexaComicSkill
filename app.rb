@@ -165,11 +165,11 @@ end
 
 def get_birth_date(req)
   req_char_val = req['request']['intent']['slots']['Character']['value']
-  if req_char_val == nil && !(req["sessionAttributes"].key?("subject"))
+  if req_char_val == nil && !(req["session"].key?("attributes"))
     no_sub_mess = "I'm sorry, I'm don't know what you meant."
     return JSON.generate(build_end_res_obj(no_sub_mess))
   elsif req_char_val == nil
-    subject = req["sessionAttributes"]["subject"]
+    subject = req["session"]["attributes"]["subject"]
   else
     subject = req_char_val
   end
