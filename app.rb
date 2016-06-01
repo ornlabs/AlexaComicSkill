@@ -187,6 +187,7 @@ def get_birth_date(req)
     return JSON.generate(build_res_obj("#{subject} was born on #{cv_res["birth"]}.",
            "#{subject} was born on #{cv_res["birth"]}.",
            "Sources:\nComic Vine | http://comicvine.gamespot.com"))
+  end
 end
 
 def end_session(req)
