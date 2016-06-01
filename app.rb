@@ -18,7 +18,7 @@ post '/' do
     puts "REQUEST:\n"
     puts request_payload
 
-    req_app_id = request_payload["session"]["application"]["applicationID"]
+    req_app_id = request_payload["session"]["application"]["applicationId"]
 
     # Send error message if request is not from our skill.
     if req_app_id != ENV['ALEXA_APP_ID']
