@@ -8,6 +8,21 @@
           "type": "COMIC_CHARACTERS"
         }
       ]
+    },
+    {
+      "intent": "GetBirthDate",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
     }
   ]
 }

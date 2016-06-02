@@ -1,3 +1,16 @@
 GetBasicInfo tell me about {Character}
 GetBasicInfo who is {Character}
 GetBasicInfo who {Character} is
+GetBasicInfo who's {Character}
+
+GetBirthDate when was {Character} born
+GetBirthDate what is {Character} birthday
+GetBirthDate when was he born
+GetBirthDate when was she born
+GetBirthDate when were they born
+GetBirthDate what is his birthday
+GetBirthDate what is her birthday
+GetBirthDate what is their birthday
+GetBirthDate what's his birthday
+GetBirthDate what's her birthday
+GetBirthDate what's their birthday
