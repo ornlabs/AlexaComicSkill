@@ -43,6 +43,7 @@ post '/' do
                   "skill creator. Good-bye!"
         res = Utils.build_end_res_obj(message)
       end
+
       return res
     # SessionEndedRequest, no action needed
     else

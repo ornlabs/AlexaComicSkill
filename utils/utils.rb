@@ -3,7 +3,7 @@ module Utils
     slot_value = req['request']['intent']['slots'][slot_name]['value']
 
     saved_subject = nil
-    if req["session"].key?("attributes")
+    if req["session"]["attributes"] != nil
       saved_subject = req["session"]["attributes"]["subject"]
     end
 

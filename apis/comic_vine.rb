@@ -33,6 +33,7 @@ module ComicVine
 
     begin
       res = query(path, filter, field_list)
+      result = nil
 
       if res["number_of_page_results"] > 0
         found = true
@@ -46,6 +47,8 @@ module ComicVine
             result_index = index
           end
         end
+
+        result = res["results"][result_index]
       end
     rescue NameError => e
       puts "Error while examining Comic Vine API response.\n" + e.message
@@ -53,6 +56,6 @@ module ComicVine
       puts "Error calling Comic Vine API.\n" + e.response
     end
 
-    return res["results"][result_index], found
+    return result, found
   end
 end
