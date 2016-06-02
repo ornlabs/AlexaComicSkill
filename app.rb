@@ -127,8 +127,6 @@ def get_birth_date(req)
   end
 end
 
-def
-
 def end_session(req)
   return Utils.build_end_res_obj("Good-bye!")
 end
