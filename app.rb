@@ -66,8 +66,12 @@ def get_basic_info(req)
   pic_url = nil
   card_text = ""
 
+  cv_fields = "aliases,birth,character_enemies,character_friends," +
+  "count_of_issue_appearances,creators,deck,first_appeared_in_issue," +
+  "gender,image,movies,name,powers,publisher,real_name,teams"
+
   marvel_res, marvel_found = Marvel.get_character(subject)
-  cv_res, cv_found = ComicVine.get_by_name(subject, "characters")
+  cv_res, cv_found = ComicVine.get_by_name(subject, "characters", cv_fields)
 
   # Review results from APIs, and decide what to return.
   res = {}
@@ -112,16 +116,18 @@ end
 def get_birth_date(req)
   subject = Utils.determine_subject(req, "Character")
 
-  cv_res, cv_found = ComicVine.get_by_name(subject, "characters")
+  cv_res, cv_found = ComicVine.get_by_name(subject, "characters", "birth,name")
 
   if !cv_found || cv_res["birth"] == nil
     message = "I could not find a birth date for #{subject}."
     return Utils.build_res_obj(message)
   else
-    message = "#{subject} was born on #{cv_res["birth"]}."
+    message = "#{cv_res["name"]} was born on #{cv_res["birth"]}."
     return Utils.build_res_obj(message)
   end
 end
+
+def
 
 def end_session(req)
   return Utils.build_end_res_obj("Good-bye!")

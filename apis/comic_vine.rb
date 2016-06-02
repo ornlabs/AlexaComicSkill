@@ -24,15 +24,32 @@ module ComicVine
     return JSON.parse((RestClient.get request_url, params).body)
   end
 
+  def ComicVine.get_detailed_info(full_path, field_list)
+    params = {
+      "api_key" => ENV['COMIC_VINE_KEY'],
+      "format" => "json",
+      "field_list" => field_list
+    }
+
+    params = {
+      :params => params
+    }
+
+    return JSON.parse((RestClient.get full_path, params).body)
+  end
+
   # Doesn't work with every resource type - only when you want to search
   # by name and select based upon number of comic books appearances.
   # In other cases, use ComicVine.query and write custom logic.
-  def ComicVine.get_by_name(name, path, field_list = nil)
+  # name and count_of_issue_appearances are added to the passed field_list
+  def ComicVine.get_by_name(name, path, field_list)
     found = false
     filter = "name:" + name
 
+    search_field_list = "api_detail_url,count_of_issue_appearances,name"
+
     begin
-      res = query(path, filter, field_list)
+      res = query(path, filter, search_field_list)
       result = nil
 
       if res["number_of_page_results"] > 0
@@ -48,7 +65,10 @@ module ComicVine
           end
         end
 
-        result = res["results"][result_index]
+        # Get more detailed info about the selected result.
+        detail_path = res["results"][result_index]["api_detail_url"]
+
+        result = get_detailed_info(detail_path, field_list)
       end
     rescue NameError => e
       puts "Error while examining Comic Vine API response.\n" + e.message
