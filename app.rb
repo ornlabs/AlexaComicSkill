@@ -66,7 +66,7 @@ def get_basic_info(req)
   pic_url = nil
   card_text = ""
 
-  cv_fields = "aliases,birth,character_enemies,character_friends," +
+  cv_fields = "aliases,birth," +
   "count_of_issue_appearances,creators,deck,first_appeared_in_issue," +
   "gender,image,movies,name,powers,publisher,real_name,teams"
 
