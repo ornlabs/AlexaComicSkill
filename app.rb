@@ -72,7 +72,7 @@ def get_basic_info(req)
 
   marvel_res, marvel_found = Marvel.get_character(subject)
   cv_res, cv_found = ComicVine.get_by_name(subject, "characters", cv_fields)
-
+  puts cv_res
   # Review results from APIs, and decide what to return.
   res = {}
   ## No Results
