@@ -72,7 +72,7 @@ module ComicVine
         # Get more detailed info about the selected result.
         detail_path = res["results"][result_index]["api_detail_url"]
 
-        result = get_detailed_info(detail_path)
+        result = get_detailed_info(detail_path)["results"]
       end
     rescue NameError => e
       puts "Error while examining Comic Vine API response.\n" + e.message

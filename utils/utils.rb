@@ -4,10 +4,10 @@ module Utils
     cv_res, cv_found = ComicVine.get_by_name(subject, "characters")
 
     if !cv_found || cv_res[attr] == nil
-      message = not_found_mess(subject)
+      message = not_found_mess.call(subject)
       return Utils.build_res_obj(message)
     else
-      message = found_mess(cv_res)
+      message = found_mess.call(cv_res)
       return Utils.build_res_obj(message)
     end
   end
