@@ -69,7 +69,7 @@ def get_basic_info(req)
   card_text = ""
 
   marvel_res, marvel_found = Marvel.get_character(subject)
-  cv_res, cv_found = ComicVine.get_by_name(subject, "characters", cv_fields)
+  cv_res, cv_found = ComicVine.get_by_name(subject, "characters")
   puts cv_res
   # Review results from APIs, and decide what to return.
   res = {}
