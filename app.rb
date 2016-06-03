@@ -68,7 +68,7 @@ def get_basic_info(req)
 
   cv_fields = "aliases,birth," +
   "count_of_issue_appearances,creators,deck,first_appeared_in_issue," +
-  "gender,image,movies,name,powers,publisher,real_name,teams"
+  "gender,image,name,powers,publisher,real_name,teams"
 
   marvel_res, marvel_found = Marvel.get_character(subject)
   cv_res, cv_found = ComicVine.get_by_name(subject, "characters", cv_fields)
