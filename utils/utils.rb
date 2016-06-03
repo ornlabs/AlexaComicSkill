@@ -12,10 +12,10 @@ module Utils
 
     if !cv_found || cv_res[attr] == nil
       message = not_found_mess.call(subject)
-      return Utils.build_res_obj(message)
+      return Utils.build_res_obj(message, subject)
     else
       message = found_mess.call(cv_res)
-      return Utils.build_res_obj(message)
+      return Utils.build_res_obj(message, subject)
     end
   end
 
