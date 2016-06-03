@@ -1,4 +1,17 @@
 module Utils
+  def Utils.get_character_attr(req, attr, not_found_mess, found_mess)
+    subject = Utils.determine_subject(req, "Character")
+    cv_res, cv_found = ComicVine.get_by_name(subject, "characters")
+
+    if !cv_found || cv_res[attr] == nil
+      message = not_found_mess(subject)
+      return Utils.build_res_obj(message)
+    else
+      message = found_mess(cv_res)
+      return Utils.build_res_obj(message)
+    end
+  end
+
   def Utils.determine_subject(req, slot_name)
     slot_value = req['request']['intent']['slots'][slot_name]['value']
 

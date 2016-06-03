@@ -34,6 +34,8 @@ post '/' do
 
       if intent == "GetBasicInfo"
         res = get_basic_info(request_payload)
+      elsif intent == "GetAliases"
+        res = get_aliases(request_payload)
       elsif intent == "GetBirthDate"
         res = get_birth_date(request_payload)
       elsif intent == "AMAZON.StopIntent" || intent == "AMAZON.CancelIntent"
@@ -65,10 +67,6 @@ def get_basic_info(req)
   attribution = ""
   pic_url = nil
   card_text = ""
-
-  cv_fields = "aliases,birth," +
-  "count_of_issue_appearances,creators,deck,first_appeared_in_issue," +
-  "gender,image,name,powers,publisher,real_name,teams"
 
   marvel_res, marvel_found = Marvel.get_character(subject)
   cv_res, cv_found = ComicVine.get_by_name(subject, "characters", cv_fields)
@@ -113,18 +111,28 @@ def get_basic_info(req)
   return Utils.build_res_obj(description, subject, subject, attribution, pic_url)
 end
 
+def get_aliases(req)
+  not_found = -> subject {
+    return "I could not find any aliases for #{subject}."
+  }
+  found = -> res {
+    formatted_list = res["aliases"].split("\r\n").join(", ")
+    return "#{res["name"]}'s aliases include #{formatted_list}."
+  }
+
+  return Utils.get_character_attr(req, "aliases", not_found, found)
+end
+
 def get_birth_date(req)
-  subject = Utils.determine_subject(req, "Character")
+  not_found = -> subject {
+    return "I could not find a birth date for #{subject}."
+  }
 
-  cv_res, cv_found = ComicVine.get_by_name(subject, "characters", "birth,name")
+  found = -> res {
+    return "#{res["name"]} was born on #{res["birth"]}."
+  }
 
-  if !cv_found || cv_res["birth"] == nil
-    message = "I could not find a birth date for #{subject}."
-    return Utils.build_res_obj(message)
-  else
-    message = "#{cv_res["name"]} was born on #{cv_res["birth"]}."
-    return Utils.build_res_obj(message)
-  end
+  return Utils.get_character_attr(req, "birth", not_found, found)
 end
 
 def end_session(req)

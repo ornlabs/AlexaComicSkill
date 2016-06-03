@@ -10,7 +10,70 @@
       ]
     },
     {
+      "intent": "GetAliases",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
       "intent": "GetBirthDate",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
+      "intent": "GetFirstIssue",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
+      "intent": "GetIssueCount",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
+      "intent": "GetPowers",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
+      "intent": "GetPublisher",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
+      "intent": "GetRealName",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
+      "intent": "GetTeams",
       "slots": [
         {
           "name": "Character",

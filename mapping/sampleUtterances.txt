@@ -3,6 +3,16 @@ GetBasicInfo who is {Character}
 GetBasicInfo who {Character} is
 GetBasicInfo who's {Character}
 
+GetAliases what are {Character} aliases
+GetAliases what are his aliases
+GetAliases what are some of {Character} other names
+GetAliases what are some of his other names
+GetAliases what else is {Character} called
+GetAliases what else are they called
+GetAliases what else is she called
+GetAliases what are some of {Character} other identities
+GetAliases what are some of their other identities
+
 GetBirthDate when was {Character} born
 GetBirthDate what is {Character} birthday
 GetBirthDate when was he born
@@ -14,3 +24,61 @@ GetBirthDate what is their birthday
 GetBirthDate what's his birthday
 GetBirthDate what's her birthday
 GetBirthDate what's their birthday
+
+GetFirstIssue what was the first appearance of {Character}
+GetFirstIssue what was their first appearance
+GetFirstIssue what was her first appearance
+GetFirstIssue what comic did {Character} first appear in
+GetFirstIssue what comic did they first appear in
+GetFirstIssue what comic did he first appear in
+GetFirstIssue when was the first appearance of {Character}
+GetFirstIssue when was their first appearance
+GetFirstIssue when was his first appearance
+GetFirstIssue what year did {Character} first appear
+GetFirstIssue what year did they first appear
+GetFirstIssue what year did she first appear
+
+GetIssueCount how many comic books has {Character} appeared in
+GetIssueCount how many comic books have they appeared in
+GetIssueCount how many comic books has he appeared in
+GetIssueCount how many issues is {Character} in
+GetIssueCount how many issues are they in
+GetIssueCount how many issues is she in
+
+GetPowers what are {Character} powers
+GetPowers what are their powers
+GetPowers what are her powers
+GetPowers what powers does {Character} have
+GetPowers what powers does he have
+GetPowers what powers do they have
+GetPowers what types of powers does {Character} have
+GetPowers what types of powers do they have
+GetPowers what types of powers does he have
+GetPowers what are the powers of {Character}
+GetPowers what are the powers she has
+GetPowers what are the powers they have
+
+GetPublisher who publishes comic books with {Character}
+GetPublisher who publishes comic books with them
+GetPublisher who publishes comic books with her
+GetPublisher what publisher makes {Character} comics
+GetPublisher what publisher make their comics
+GetPublisher who is the publisher for {Character}
+GetPublisher who is the publisher for them
+GetPublisher who is the publisher for him
+GetPublisher who publishes {Character}
+
+GetRealName what is {Character} real name
+GetRealName what is their real name
+GetRealName what is his real name
+GetRealName what is {Character} birth name
+GetRealName what is her real name
+GetRealName what is their real name
+GetRealName what is the real name of {Character}
+GetRealName what is the birth name of {Character}
+
+GetTeams what teams is {Character} on
+GetTeams what teams are they on
+GetTeams what teams is he on
+GetTeams what teams has {Character} been a part of
+GetTeams what teams has {Character} been a member of
