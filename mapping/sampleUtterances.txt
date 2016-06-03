@@ -45,19 +45,6 @@ GetIssueCount how many issues is {Character} in
 GetIssueCount how many issues are they in
 GetIssueCount how many issues is she in
 
-GetPowers what are {Character} powers
-GetPowers what are their powers
-GetPowers what are her powers
-GetPowers what powers does {Character} have
-GetPowers what powers does he have
-GetPowers what powers do they have
-GetPowers what types of powers does {Character} have
-GetPowers what types of powers do they have
-GetPowers what types of powers does he have
-GetPowers what are the powers of {Character}
-GetPowers what are the powers she has
-GetPowers what are the powers they have
-
 GetPublisher who publishes comic books with {Character}
 GetPublisher who publishes comic books with them
 GetPublisher who publishes comic books with her
@@ -76,9 +63,6 @@ GetRealName what is her real name
 GetRealName what is their real name
 GetRealName what is the real name of {Character}
 GetRealName what is the birth name of {Character}
-
-GetTeams what teams is {Character} on
-GetTeams what teams are they on
-GetTeams what teams is he on
-GetTeams what teams has {Character} been a part of
-GetTeams what teams has {Character} been a member of
+GetRealName what is {Character} secret identity
+GetRealName what is their secret identity
+GetRealName what is the secret identity of {Character}

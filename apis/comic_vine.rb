@@ -27,7 +27,12 @@ module ComicVine
   def ComicVine.get_detailed_info(full_path)
     field_list = "aliases,birth," +
     "count_of_issue_appearances,creators,deck,first_appeared_in_issue," +
-    "gender,image,name,powers,publisher,real_name,teams"
+    "gender,image,name,powers,publisher,real_name,teams,site_detail_url"
+
+    if full_path.include? "issue"
+      field_list = "cover_date,deck,image,issue_number,name,site_detail_url," +
+      "volume"
+    end
 
     params = {
       "api_key" => ENV['COMIC_VINE_KEY'],

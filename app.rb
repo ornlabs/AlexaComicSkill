@@ -38,6 +38,14 @@ post '/' do
         res = get_aliases(request_payload)
       elsif intent == "GetBirthDate"
         res = get_birth_date(request_payload)
+      elsif intent == "GetFirstIssue"
+        res = get_first_issue(request_payload)
+      elsif intent == "GetIssueCount"
+        res = get_issue_count(request_payload)
+      elsif intent == "GetPublisher"
+        res = get_publisher(request_payload)
+      elsif intent == "GetRealName"
+        res = get_real_name(request_payload)
       elsif intent == "AMAZON.StopIntent" || intent == "AMAZON.CancelIntent"
         res = end_session(request_payload)
       else
@@ -127,12 +135,66 @@ def get_birth_date(req)
   not_found = -> subject {
     return "I could not find a birth date for #{subject}."
   }
-
   found = -> res {
     return "#{res["name"]} was born on #{res["birth"]}."
   }
 
   return Utils.get_character_attr(req, "birth", not_found, found)
+end
+
+def get_first_issue(req)
+  not_found = -> subject {
+    return "I could not find the first issue #{subject} appeared in."
+  }
+  found = -> res {
+    issue_id = res["first_appeared_in_issue"]["id"]
+    issue_url = "http://comicvine.gamespot.com/api/issue/4000-" +
+                issue_id.to_s + "/"
+
+    iss_det = ComicVine.get_detailed_info(issue_url)["results"]
+
+    return "#{res["name"]} first appeared in #{iss_det["volume"]["name"]} " +
+           "number #{iss_det["issue_number"]}: #{iss_det["name"]}, which" +
+           "was dated #{iss_det["cover_date"]}."
+  }
+
+  return Utils.get_character_attr(req, "first_appeared_in_issue",
+                                  not_found, found)
+end
+
+def get_issue_count(req)
+  not_found = -> subject {
+    return "I'm not sure how many issues #{subject} has appeared in."
+  }
+  found = -> res {
+    return "#{res["name"]} has appeared in approximately " +
+           "#{res["count_of_issue_appearances"]} issues."
+  }
+
+  return Utils.get_character_attr(req, "count_of_issue_appearances",
+                                  not_found, found)
+end
+
+def get_publisher(req)
+  not_found = -> subject {
+    return "I could not find a real name for #{subject}."
+  }
+  found = -> res {
+    return "The real name of #{res["name"]} is #{res["real_name"]}."
+  }
+
+  return Utils.get_character_attr(req, "real_name", not_found, found)
+end
+
+def get_real_name(req)
+  not_found = -> subject {
+    return "I could not find a real name for #{subject}."
+  }
+  found = -> res {
+    return "The real name of #{res["name"]} is #{res["real_name"]}."
+  }
+
+  return Utils.get_character_attr(req, "real_name", not_found, found)
 end
 
 def end_session(req)
