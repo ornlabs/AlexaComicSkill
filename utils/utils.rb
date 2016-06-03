@@ -1,6 +1,13 @@
 module Utils
   def Utils.get_character_attr(req, attr, not_found_mess, found_mess)
     subject = Utils.determine_subject(req, "Character")
+
+    if subject == nil
+      no_subject_message = "I'm not sure who you're asking about. Please " +
+                           "try asking again."
+      return Utils.build_res_obj(no_subject_message)
+    end
+
     cv_res, cv_found = ComicVine.get_by_name(subject, "characters")
 
     if !cv_found || cv_res[attr] == nil
@@ -12,6 +19,7 @@ module Utils
     end
   end
 
+  # Will return nil if no subject is found.
   def Utils.determine_subject(req, slot_name)
     slot_value = req['request']['intent']['slots'][slot_name]['value']
 
@@ -21,9 +29,7 @@ module Utils
     end
 
     if slot_value == nil && saved_subject == nil
-      no_subject_message = "I'm not sure what you're asking about. Please " +
-                           "try asking again."
-      return build_res_obj(no_subject_message)
+      subject = nil
     elsif slot_value == nil
       subject = saved_subject
     else
@@ -45,6 +51,12 @@ module Utils
         "outputSpeech" => {
           "type" => "PlainText",
           "text" => speech_text
+        },
+        "reprompt" => {
+          "outputSpeech" => {
+            "type" => "PlainText",
+            "text" => "What else do you want to know?"
+          }
         },
         "shouldEndSession" => false
       }
