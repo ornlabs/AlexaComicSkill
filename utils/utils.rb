@@ -23,7 +23,7 @@ module Utils
     if slot_value == nil && saved_subject == nil
       no_subject_message = "I'm not sure what you're asking about. Please " +
                            "try asking again."
-      return JSON.generate(build_res_obj(no_subject_message))
+      return build_res_obj(no_subject_message)
     elsif slot_value == nil
       subject = saved_subject
     else
