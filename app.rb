@@ -185,13 +185,13 @@ end
 
 def get_publisher(req)
   not_found = -> subject {
-    return "I could not find a real name for #{subject}."
+    return "I could not find the publisher for #{subject}."
   }
   found = -> res {
-    return "The real name of #{res["name"]} is #{res["real_name"]}."
+    return "The publisher of #{res["name"]} comics is #{res["publisher"]["name"]}."
   }
 
-  return Utils.get_character_attr(req, "real_name", not_found, found)
+  return Utils.get_character_attr(req, "publisher", not_found, found)
 end
 
 def get_real_name(req)
