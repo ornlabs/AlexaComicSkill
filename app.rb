@@ -78,7 +78,7 @@ def get_basic_info(req)
     return Utils.build_res_obj(no_subject_message)
   end
 
-  subject = Utils.unposs(subject)
+  subject = Utils.handleSpecialCases(Utils.unposs(subject))
   description = ""
   attribution = ""
   pic_url = nil

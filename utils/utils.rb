@@ -33,7 +33,7 @@ module Utils
     elsif slot_value == nil
       subject = saved_subject
     else
-      subject = unposs(slot_value)
+      subject = handleSpecialCases(unposs(slot_value))
     end
 
     return subject
@@ -115,5 +115,17 @@ module Utils
       return str[0...-1]
     end
     return str
+  end
+
+  def Utils.handleSpecialCases(subject)
+    # Hack to make sure the normal/main Spider-Man/Woman/Girl is returned,
+    # as Marvel and Comic Vine list their names with a hyphen.
+    if subject.downcase.start_with?("spider")
+      unless subject.downcase.start_with?("spider-")
+        subject = subject.sub(" ", "-")
+      end
+    end
+
+    return subject
   end
 end
