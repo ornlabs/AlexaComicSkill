@@ -81,7 +81,7 @@ module ComicVine
       end
     rescue NameError => e
       puts "Error while examining Comic Vine API response.\n" + e.message
-    rescue RestClient::ResourceNotFound => e
+    rescue RestClient::Exception => e
       puts "Error calling Comic Vine API.\n" + e.response
     end
 

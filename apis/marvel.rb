@@ -29,7 +29,7 @@ module Marvel
       end
     rescue NameError => e
       puts "Error while examining Marvel API response.\n" + e.message
-    rescue RestClient::ResourceNotFound => e
+    rescue RestClient::Exception => e
       puts "Error calling Marvel API.\n" + e.response
     end
 

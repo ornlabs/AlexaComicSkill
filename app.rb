@@ -70,7 +70,15 @@ post '/' do
 end
 
 def get_basic_info(req)
-  subject = Utils.unposs(req['request']['intent']['slots']['Character']['value'])
+  subject = req['request']['intent']['slots']['Character']['value']
+
+  if subject == nil
+    no_subject_message = "I'm not sure who you're asking about. Please " +
+                         "try asking again."
+    return Utils.build_res_obj(no_subject_message)
+  end
+
+  subject = Utils.unposs(subject)
   description = ""
   attribution = ""
   pic_url = nil
@@ -154,7 +162,7 @@ def get_first_issue(req)
     iss_det = ComicVine.get_detailed_info(issue_url)["results"]
 
     return "#{res["name"]} first appeared in #{iss_det["volume"]["name"]} " +
-           "number #{iss_det["issue_number"]}: #{iss_det["name"]}, which" +
+           "number #{iss_det["issue_number"]}: #{iss_det["name"]}, which " +
            "was dated #{iss_det["cover_date"]}."
   }
 
