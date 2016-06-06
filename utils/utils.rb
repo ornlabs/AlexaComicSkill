@@ -76,7 +76,7 @@ module Utils
       end
 
       if attribution != ""
-        card_text += "\n\n" + attribution
+        card_text += "---\n" + attribution
       end
 
       if card_image == nil
@@ -123,6 +123,9 @@ module Utils
     if subject.downcase.start_with?("spider")
       unless subject.downcase.start_with?("spider-")
         subject = subject.sub(" ", "-")
+      end
+      if subject.downcase == "spiderman"
+        subject = "Spider-Man"
       end
     end
 

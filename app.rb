@@ -55,10 +55,10 @@ post '/' do
       end
 
       return res
-    # SessionEndedRequest, no action needed
+    # SessionEndedRequest
     else
       puts "Session Ended."
-      return ""
+      return Utils.build_end_res_obj("Goodbye!")
     end
   rescue => e
     puts "ERROR\n" + e.message
@@ -79,10 +79,12 @@ def get_basic_info(req)
   end
 
   subject = Utils.handleSpecialCases(Utils.unposs(subject))
+  subject = subject.split.map(&:capitalize).join(' ')
+
   description = ""
   attribution = ""
   pic_url = nil
-  card_text = ""
+  card_text = nil
 
   marvel_res, marvel_found = Marvel.get_character(subject)
   cv_res, cv_found = ComicVine.get_by_name(subject, "characters")
@@ -91,7 +93,6 @@ def get_basic_info(req)
   res = {}
   ## No Results
   if !marvel_found && !cv_found
-    subject = subject.split.map(&:capitalize).join(' ')
     message = "I'm sorry, I could not find any information about #{subject}."
     return Utils.build_res_obj(message)
   end
@@ -104,14 +105,12 @@ def get_basic_info(req)
     description = "No description is available for #{subject}."
   end
   ## Attribution
-  if marvel_found && cv_found
-    attribution = "Sources:\n" +
-    marvel_res["attributionText"] +
-    "\nComic Vine | http://comicvine.gamespot.com"
-  elsif marvel_found
-    attribution = "Sources:\n" + marvel_res["attributionText"]
-  else
-    attribution = "Sources:\nComic Vine | http://comicvine.gamespot.com"
+  attribution = "Sources:\n"
+  if marvel_found
+    attribution += marvel_res["attributionText"] + " | http://marvel.com\n"
+  end
+  if cv_found
+    attribution += "Comic Vine | http://comicvine.gamespot.com\n"
   end
   ## Picture
   if marvel_found && marvel_res["data"]["results"][0]["thumbnail"] != nil
@@ -123,8 +122,38 @@ def get_basic_info(req)
   if pic_url != nil && !(pic_url.start_with?("https"))
     pic_url = "https" + pic_url[4..-1]
   end
+  ## Card Text
+  if cv_found
 
-  return Utils.build_res_obj(description, subject, subject, attribution, pic_url)
+    card_text = description + "\n---\n"
+
+    unless cv_res["birth"] == nil
+      card_text += "Born: " + cv_res["birth"] + "\n"
+    end
+
+    unless cv_res["count_of_issue_appearances"] == nil
+      card_text += "Issue Appearances: " +
+                    cv_res["count_of_issue_appearances"].to_s + "\n"
+    end
+
+    unless cv_res["publisher"] == nil
+      card_text += "Publisher: " + cv_res["publisher"]["name"] + "\n"
+    end
+
+    unless cv_res["real_name"] == nil
+      card_text += "Real Name: " + cv_res["real_name"] + "\n"
+    end
+
+    unless cv_res["aliases"] == nil
+      card_text += "---\nAliases: " +
+                   cv_res["aliases"].split(/\r\n|\n/).join(", ") +
+                   "\n"
+    end
+
+  end
+
+  return Utils.build_res_obj(description, subject, subject, attribution,\
+                             pic_url, card_text)
 end
 
 def get_aliases(req)
@@ -132,7 +161,7 @@ def get_aliases(req)
     return "I could not find any aliases for #{subject}."
   }
   found = -> res {
-    formatted_list = res["aliases"].split("\r\n").join(", ")
+    formatted_list = res["aliases"].split(/\r\n|\n/).join(", ")
     return "#{res["name"]}'s aliases include #{formatted_list}."
   }
 
