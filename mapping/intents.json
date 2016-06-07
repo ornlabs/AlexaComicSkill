@@ -64,10 +64,16 @@
       ]
     },
     {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
+    },
+    {
       "intent": "AMAZON.StopIntent"
     },
     {
-      "intent": "AMAZON.CancelIntent"
+      "intent": "AMAZON.YesIntent"
     }
   ]
 }

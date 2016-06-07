@@ -1,21 +1,40 @@
 module Utils
   def Utils.get_character_attr(req, attr, not_found_mess, found_mess)
-    subject = Utils.determine_subject(req, "Character")
+    return get_attribute(
+      req,
+      attr,
+      "Character",
+      "characters",
+      not_found_mess,
+      found_mess
+    )
+  end
+
+  def Utils.get_attribute(req, attr, sub_slot_name, cv_resource_name,\
+                          not_found_mess, found_mess)
+    subject = Utils.determine_subject(req, sub_slot_name)
 
     if subject == nil
-      no_subject_message = "I'm not sure who you're asking about. Please " +
+      no_subject_message = "I'm not sure what you're asking about. Please " +
                            "try asking again."
       return Utils.build_res_obj(no_subject_message)
     end
 
-    cv_res, cv_found = ComicVine.get_by_name(subject, "characters")
+    cv_res, cv_found = ComicVine.get_by_name(subject, cv_resource_name)
+
+    sessionAttributes = { "subject" => subject }
 
     if !cv_found || cv_res[attr] == nil
       message = not_found_mess.call(subject)
-      return Utils.build_res_obj(message, subject)
+      return Utils.build_res_obj(message, sessionAttributes)
     else
-      message = found_mess.call(cv_res)
-      return Utils.build_res_obj(message, subject)
+      message, sess_attr = found_mess.call(cv_res)
+
+      if sess_attr != nil
+        sessionAttributes = sessionAttributes.merge(sess_attr)
+      end
+
+      return Utils.build_res_obj(message, sessionAttributes)
     end
   end
 
@@ -41,10 +60,8 @@ module Utils
 
   # Everything but speech_text is optional.
   # If only one parameter (speech_text) is passed, there will be no card.
-  # If nothing is passed for card_text it will be the same as speech_text.
-  # For no card text, pass an empty string.
-  def Utils.build_res_obj(speech_text, subject = nil, card_title = nil,\
-                          attribution = "", card_image = nil, card_text = nil)
+  # card = { "title" => "", "text" => "", "attribution" => "", "image" => ""}
+  def Utils.build_res_obj(speech_text, sessionAttributes = {}, card = nil)
     res = {
       "version" => "1.0",
       "response" => {
@@ -62,31 +79,31 @@ module Utils
       }
     }
 
-    if subject
-      res["sessionAttributes"] = {
-        "subject" => subject
-      }
+    if sessionAttributes != {}
+      res["sessionAttributes"] = sessionAttributes
     end
 
-    if card_title
-      res["response"]["card"] = { "title" => card_title }
+    if card != nil
+      res["response"]["card"] = { "title" => card["title"] }
 
-      if card_text == nil
+      if card["text"] == nil
         card_text = speech_text
+      else
+        card_text = card["text"]
       end
 
-      if attribution != ""
-        card_text += "---\n" + attribution
+      if card["attribution"] != nil
+        card_text += "---\n" + card["attribution"]
       end
 
-      if card_image == nil
+      if card["image"] == nil
         res["response"]["card"]["type"] = "Simple"
         res["response"]["card"]["content"] = card_text
       else
         res["response"]["card"]["type"] = "Standard"
         res["response"]["card"]["text"] = card_text
         res["response"]["card"]["image"] = {
-          "largeImageUrl" => card_image
+          "largeImageUrl" => card["image"]
         }
       end
     end

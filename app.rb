@@ -46,6 +46,10 @@ post '/' do
         res = get_publisher(request_payload)
       elsif intent == "GetRealName"
         res = get_real_name(request_payload)
+      elsif intent == "AMAZON.YesIntent"
+        res = yes_intent(request_payload)
+      elsif intent == "AMAZON.NoIntent"
+        res = no_intent(request_payload)
       elsif intent == "AMAZON.StopIntent" || intent == "AMAZON.CancelIntent"
         res = end_session(request_payload)
       else
@@ -90,7 +94,7 @@ def get_basic_info(req)
   cv_res, cv_found = ComicVine.get_by_name(subject, "characters")
   puts cv_res
   # Review results from APIs, and decide what to return.
-  res = {}
+  card = { "title" => subject }
   ## No Results
   if !marvel_found && !cv_found
     message = "I'm sorry, I could not find any information about #{subject}."
@@ -105,55 +109,59 @@ def get_basic_info(req)
     description = "No description is available for #{subject}."
   end
   ## Attribution
-  attribution = "Sources:\n"
+  card["attribution"] = "Sources:\n"
   if marvel_found
-    attribution += marvel_res["attributionText"] + " | http://marvel.com\n"
+    card["attribution"] += marvel_res["attributionText"] +
+                           " | http://marvel.com\n"
   end
   if cv_found
-    attribution += "Comic Vine | http://comicvine.gamespot.com\n"
+    card["attribution"] += "Comic Vine | http://comicvine.gamespot.com\n"
   end
   ## Picture
   if marvel_found && marvel_res["data"]["results"][0]["thumbnail"] != nil
-    pic_url = marvel_res["data"]["results"][0]["thumbnail"]["path"] +
+    card["image"] = marvel_res["data"]["results"][0]["thumbnail"]["path"] +
               "/standard_fantastic." +
               marvel_res["data"]["results"][0]["thumbnail"]["extension"]
   end
   # Turn http to https
-  if pic_url != nil && !(pic_url.start_with?("https"))
-    pic_url = "https" + pic_url[4..-1]
+  if card["image"] != nil && !(card["image"].start_with?("https"))
+    card["image"] = "https" + card["image"][4..-1]
   end
   ## Card Text
   if cv_found
 
-    card_text = description + "\n---\n"
+    card["text"] = description + "\n---\n"
 
     unless cv_res["birth"] == nil
-      card_text += "Born: " + cv_res["birth"] + "\n"
+      card["text"] += "Born: " + cv_res["birth"] + "\n"
     end
 
     unless cv_res["count_of_issue_appearances"] == nil
-      card_text += "Issue Appearances: " +
-                    cv_res["count_of_issue_appearances"].to_s + "\n"
+      card["text"] += "Issue Appearances: " +
+                      cv_res["count_of_issue_appearances"].to_s + "\n"
     end
 
     unless cv_res["publisher"] == nil
-      card_text += "Publisher: " + cv_res["publisher"]["name"] + "\n"
+      card["text"] += "Publisher: " + cv_res["publisher"]["name"] + "\n"
     end
 
     unless cv_res["real_name"] == nil
-      card_text += "Real Name: " + cv_res["real_name"] + "\n"
+      card["text"] += "Real Name: " + cv_res["real_name"] + "\n"
     end
 
     unless cv_res["aliases"] == nil
-      card_text += "---\nAliases: " +
-                   cv_res["aliases"].split(/\r\n|\n/).join(", ") +
-                   "\n"
+      card["text"] += "---\nAliases: " +
+                      cv_res["aliases"].split(/\r\n|\n/).join(", ") +
+                      "\n"
     end
 
   end
 
-  return Utils.build_res_obj(description, subject, subject, attribution,\
-                             pic_url, card_text)
+  sessionAttributes = {
+    "subject" => subject
+  }
+
+  return Utils.build_res_obj(description, sessionAttributes, card)
 end
 
 def get_aliases(req)
@@ -161,8 +169,24 @@ def get_aliases(req)
     return "I could not find any aliases for #{subject}."
   }
   found = -> res {
-    formatted_list = res["aliases"].split(/\r\n|\n/).join(", ")
-    return "#{res["name"]}'s aliases include #{formatted_list}."
+    alia_arr = res["aliases"].split(/\r\n|\n/)
+    sess_attr = {}
+
+    if alia_arr.size > 5
+      say_now = "#{res["name"]}'s aliases include #{alia_arr[0]}, " +
+                "#{alia_arr[1]}, #{alia_arr[2]}, and #{alia_arr.size - 3} " +
+                "more. Would you like to hear the rest?"
+      rest_except_last = alia_arr[3..(alia_arr.size-2)].join(", ")
+      last_alias = alia_arr[alia_arr.size-1]
+      extra_info = "#{res["name"]} has also been called #{rest_except_last} " +
+                   "and #{last_alias}."
+
+      sess_attr["extraInfo"] = extra_info
+      return say_now, sess_attr
+    else
+      formatted_list = alia_arr.join(", ")
+      return "#{res["name"]}'s aliases include #{formatted_list}."
+    end
   }
 
   return Utils.get_character_attr(req, "aliases", not_found, found)
@@ -232,6 +256,31 @@ def get_real_name(req)
   }
 
   return Utils.get_character_attr(req, "real_name", not_found, found)
+end
+
+def yes_intent(req)
+  sess_attr = req["session"]["attributes"]
+
+  if sess_attr == nil
+    message = "What would you like to know?"
+    return Utils.build_res_obj(message)
+  elsif sess_attr["extraInfo"] == nil
+    message = "What would you like to know?"
+    return Utils.build_res_obj(message, sess_attr)
+  else
+    speech_text = sess_attr["extraInfo"]
+    sess_attr["extraInfo"] = nil
+    return Utils.build_res_obj(speech_text, sess_attr)
+  end
+end
+
+def no_intent(req)
+  message = "Ok. What else would you like to know?"
+  if req["session"]["attributes"] != nil
+    return Utils.build_res_obj(message, req["session"]["attributes"])
+  else
+    return Utils.build_res_obj(message)
+  end
 end
 
 def end_session(req)
