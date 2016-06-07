@@ -24,6 +24,45 @@ module ComicVine
     return JSON.parse((RestClient.get request_url, params).body)
   end
 
+  # Searches over multiple resource types.
+  def ComicVine.search(subject)
+    request_url = "http://comicvine.gamespot.com/api/search/"
+
+    params = {
+      "api_key" => ENV['COMIC_VINE_KEY'],
+      "format" => "json",
+      "resources" => "character,concept,object,location,publisher,person,team",
+      "query" => subject
+    }
+
+    params = {
+      :params => params
+    }
+
+    begin
+      results = JSON.parse((RestClient.get request_url, params).body)
+
+      result_index = results["results"].index{ |result|
+        result["name"].downcase == subject.downcase
+      }
+
+      if result_index == nil
+        return nil, false
+      else
+        detail_path = results["results"][result_index]["api_detail_url"]
+        det_result = get_detailed_info(detail_path)["results"]
+        return det_result, true,
+               results["results"][result_index]["resource_type"]
+      end
+    rescue NameError => e
+      puts "Error while examining Comic Vine API response.\n" + e.message
+    rescue RestClient::Exception => e
+      puts "Error calling Comic Vine API.\n" + e.response
+    end
+
+    return nil, false
+  end
+
   def ComicVine.get_detailed_info(full_path)
     field_list = "aliases,birth," +
     "count_of_issue_appearances,creators,deck,first_appeared_in_issue," +
@@ -50,7 +89,6 @@ module ComicVine
   # Doesn't work with every resource type - only when you want to search
   # by name and select based upon number of comic books appearances.
   # In other cases, use ComicVine.query and write custom logic.
-  # name and count_of_issue_appearances are added to the passed field_list
   def ComicVine.get_by_name(name, path)
     found = false
     filter = "name:" + name

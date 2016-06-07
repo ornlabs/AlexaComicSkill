@@ -78,8 +78,13 @@ post '/' do
 end
 
 def get_basic_info(req)
-  subject = req['request']['intent']['slots']['Character']['value']
-
+  subject = nil
+  if req['request']['intent']['slots']['Character'] != nil
+    subject = req['request']['intent']['slots']['Character']['value']
+  end
+  if subject == nil && req['request']['intent']['slots']['Team'] != nil
+    subject = req['request']['intent']['slots']['Team']['value']
+  end
   if subject == nil
     no_subject_message = "I'm not sure who you're asking about. Please " +
                          "try asking again."
@@ -95,7 +100,7 @@ def get_basic_info(req)
   card_text = nil
 
   marvel_res, marvel_found = Marvel.get_character(subject)
-  cv_res, cv_found = ComicVine.get_by_name(subject, "characters")
+  cv_res, cv_found, resource_type = ComicVine.search(subject)
   puts cv_res
   # Review results from APIs, and decide what to return.
   card = { "title" => subject }

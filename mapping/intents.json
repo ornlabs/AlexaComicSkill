@@ -6,6 +6,10 @@
         {
           "name": "Character",
           "type": "COMIC_CHARACTERS"
+        },
+        {
+          "name": "Team",
+          "type": "COMIC_TEAMS"
         }
       ]
     },

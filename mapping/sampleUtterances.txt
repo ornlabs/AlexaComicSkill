@@ -1,7 +1,13 @@
 GetBasicInfo tell me about {Character}
+GetBasicInfo tell me about the {Character}
 GetBasicInfo who is {Character}
 GetBasicInfo who {Character} is
 GetBasicInfo who's {Character}
+GetBasicInfo tell me about {Team}
+GetBasicInfo tell me about the {Team}
+GetBasicInfo who are {Team}
+GetBasicInfo who are the {Team}
+GetBasicInfo who {Team} are
 
 GetAliases what are {Character} aliases
 GetAliases what are his aliases
