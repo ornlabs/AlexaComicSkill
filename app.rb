@@ -42,10 +42,14 @@ post '/' do
         res = get_first_issue(request_payload)
       elsif intent == "GetIssueCount"
         res = get_issue_count(request_payload)
+      elsif intent == "GetPowers"
+        res = get_powers(request_payload)
       elsif intent == "GetPublisher"
         res = get_publisher(request_payload)
       elsif intent == "GetRealName"
         res = get_real_name(request_payload)
+      elsif intent == "GetTeams"
+        res = get_teams(request_payload)
       elsif intent == "AMAZON.YesIntent"
         res = yes_intent(request_payload)
       elsif intent == "AMAZON.NoIntent"
@@ -155,6 +159,22 @@ def get_basic_info(req)
                       "\n"
     end
 
+    unless cv_res["powers"] == nil
+      pow_arr = []
+      cv_res["powers"].each { |power|
+        pow_arr << power["name"]
+      }
+      card["text"] += "---\nPowers: " + pow_arr.join(", ") + "\n"
+    end
+
+    unless cv_res["teams"] == nil
+      team_arr = []
+      cv_res["teams"].each { |team|
+        team_arr << team["name"]
+      }
+      card["text"] += "---\nTeams: " + team_arr.join(", ") + "\n"
+    end
+
   end
 
   sessionAttributes = {
@@ -178,8 +198,8 @@ def get_aliases(req)
                 "more. Would you like to hear the rest?"
       rest_except_last = alia_arr[3..(alia_arr.size-2)].join(", ")
       last_alias = alia_arr[alia_arr.size-1]
-      extra_info = "#{res["name"]} has also been called #{rest_except_last} " +
-                   "and #{last_alias}."
+      extra_info = "#{res["name"]} has also been called " +
+                   "#{rest_except_last}, and #{last_alias}."
 
       sess_attr["extraInfo"] = extra_info
       return say_now, sess_attr
@@ -236,6 +256,38 @@ def get_issue_count(req)
                                   not_found, found)
 end
 
+def get_powers(req)
+  not_found = -> subject {
+    return "I could not find any powers for #{subject}."
+  }
+  found = -> res {
+    pow_arr = []
+    res["powers"].each { |power|
+      pow_arr << power["name"]
+    }
+
+    sess_attr = {}
+
+    if pow_arr.size > 5
+      say_now = "#{res["name"]}'s powers include #{pow_arr[0]}, " +
+                "#{pow_arr[1]}, #{pow_arr[2]}, and #{pow_arr.size - 3} " +
+                "more. Would you like to hear the rest?"
+      rest_except_last = pow_arr[3..(pow_arr.size-2)].join(", ")
+      last_power = pow_arr[pow_arr.size-1]
+      extra_info = "Other powers of #{res["name"]} include " +
+                   "#{rest_except_last}, and #{last_power}."
+
+      sess_attr["extraInfo"] = extra_info
+      return say_now, sess_attr
+    else
+      formatted_list = pow_arr.join(", ")
+      return "#{res["name"]}'s powers include #{formatted_list}."
+    end
+  }
+
+  return Utils.get_character_attr(req, "powers", not_found, found)
+end
+
 def get_publisher(req)
   not_found = -> subject {
     return "I could not find the publisher for #{subject}."
@@ -256,6 +308,39 @@ def get_real_name(req)
   }
 
   return Utils.get_character_attr(req, "real_name", not_found, found)
+end
+
+def get_teams(req)
+  not_found = -> subject {
+    return "I could not find any teams for #{subject}."
+  }
+  found = -> res {
+    team_arr = []
+    res["teams"].each { |team|
+      team_arr << team["name"]
+    }
+
+    sess_attr = {}
+
+    if team_arr.size > 5
+      say_now = "Teams #{res["name"]} has been a member of include " +
+                "#{team_arr[0]}, " +
+                "#{team_arr[1]}, #{team_arr[2]}, and #{team_arr.size - 3} " +
+                "more. Would you like to hear the rest?"
+      rest_except_last = team_arr[3..(team_arr.size-2)].join(", ")
+      last_team = team_arr[team_arr.size-1]
+      extra_info = "Other teams #{res["name"]} has been on include " +
+                   "#{rest_except_last}, and #{last_team}."
+
+      sess_attr["extraInfo"] = extra_info
+      return say_now, sess_attr
+    else
+      formatted_list = team_arr.join(", ")
+      return "Teams #{res["name"]} has been on include #{formatted_list}."
+    end
+  }
+
+  return Utils.get_character_attr(req, "teams", not_found, found)
 end
 
 def yes_intent(req)

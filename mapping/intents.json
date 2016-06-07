@@ -46,6 +46,15 @@
       ]
     },
     {
+      "intent": "GetPowers",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
       "intent": "GetPublisher",
       "slots": [
         {
@@ -56,6 +65,15 @@
     },
     {
       "intent": "GetRealName",
+      "slots": [
+        {
+          "name": "Character",
+          "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
+      "intent": "GetTeams",
       "slots": [
         {
           "name": "Character",

@@ -59,6 +59,12 @@ You can exit Comic Book Guide by saying `exit`, `end`, or `close`.
 
 > *How many issues is Hawkeye in?*
 
+### Powers
+
+> *What are Supergirl's powers?*
+
+> *What powers does Aquaman have?*
+
 ### Publisher
 
 > *Who publishes comic books with Lex Luthor?*
@@ -70,3 +76,9 @@ You can exit Comic Book Guide by saying `exit`, `end`, or `close`.
 > *What is Cable's real name?*
 
 > *What is the birth name of Harley Quinn?*
+
+### Teams
+
+> *What teams is Doctor Strange on?*
+
+> *What teams has Deadshot been a member of?*
