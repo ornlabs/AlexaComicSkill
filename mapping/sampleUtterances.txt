@@ -9,18 +9,22 @@ GetBasicInfo who are {Team}
 GetBasicInfo who are the {Team}
 GetBasicInfo who {Team} are
 
-GetAliases what are {Character} aliases
 GetAliases what are his aliases
-GetAliases what are some of {Character} other names
 GetAliases what are some of his other names
-GetAliases what else is {Character} called
 GetAliases what else are they called
 GetAliases what else is she called
-GetAliases what are some of {Character} other identities
 GetAliases what are some of their other identities
+GetAliases what are {Character} aliases
+GetAliases what are some of {Character} other names
+GetAliases what else is {Character} called
+GetAliases what are some of {Character} other identities
+GetAliases what are {Team} aliases
+GetAliases what are the {Team} aliases
+GetAliases what are some of {Team} other names
+GetAliases what are some of the {Team} other names
+GetAliases what else are {Team} called
+GetAliases what else are the {Team} called
 
-GetBirthDate when was {Character} born
-GetBirthDate what is {Character} birthday
 GetBirthDate when was he born
 GetBirthDate when was she born
 GetBirthDate when were they born
@@ -30,68 +34,108 @@ GetBirthDate what is their birthday
 GetBirthDate what's his birthday
 GetBirthDate what's her birthday
 GetBirthDate what's their birthday
+GetBirthDate when was {Character} born
+GetBirthDate what is {Character} birthday
 
-GetFirstIssue what was the first appearance of {Character}
 GetFirstIssue what was their first appearance
 GetFirstIssue what was her first appearance
-GetFirstIssue what comic did {Character} first appear in
 GetFirstIssue what comic did they first appear in
 GetFirstIssue what comic did he first appear in
-GetFirstIssue when was the first appearance of {Character}
 GetFirstIssue when was their first appearance
 GetFirstIssue when was his first appearance
-GetFirstIssue what year did {Character} first appear
 GetFirstIssue what year did they first appear
 GetFirstIssue what year did she first appear
+GetFirstIssue what was their first issue
+GetFirstIssue what was the first appearance of {Character}
+GetFirstIssue what comic did {Character} first appear in
+GetFirstIssue when was the first appearance of {Character}
+GetFirstIssue what year did {Character} first appear
+GetFirstIssue what was the first issue with {Character}
+GetFirstIssue what was the first appearance of {Team}
+GetFirstIssue what was the first appearance of the {Team}
+GetFirstIssue what comic did {Team} first appear in
+GetFirstIssue what comic did the {Team} first appear in
+GetFirstIssue when was the first appearance of {Team}
+GetFirstIssue when was the first appearance of the {Team}
+GetFirstIssue what year did {Team} first appear
+GetFirstIssue what year did the {Team} first appear
+GetFirstIssue what was the first issue with {Team}
+GetFirstIssue what was the first issue with the {Team}
 
-GetIssueCount how many comic books has {Character} appeared in
 GetIssueCount how many comic books have they appeared in
 GetIssueCount how many comic books has he appeared in
-GetIssueCount how many issues is {Character} in
 GetIssueCount how many issues are they in
 GetIssueCount how many issues is she in
+GetIssueCount how many issues is {Character} in
+GetIssueCount how many comic books has {Character} appeared in
 
-GetPowers what are {Character} powers
+GetMembers who are their members
+GetMembers who are the members
+GetMembers who's on it
+GetMembers who is on the team
+GetMembers who is a part of the team
+GetMembers what characters are on the team
+GetMembers who are {Team} members
+GetMembers who are the {Team} members
+GetMembers who are the members of {Team}
+GetMembers who are the members of the {Team}
+GetMembers who's on {Team}
+GetMembers who's on the {Team}
+GetMembers who is a part of {Team}
+GetMembers who is a part of the {Team}
+GetMembers what characters are on {Team}
+GetMembers what characters are on the {Team}
+
 GetPowers what are their powers
 GetPowers what are her powers
-GetPowers what powers does {Character} have
 GetPowers what powers does he have
 GetPowers what powers do they have
-GetPowers what types of powers does {Character} have
 GetPowers what types of powers do they have
 GetPowers what types of powers does he have
-GetPowers what are the powers of {Character}
 GetPowers what are the powers she has
 GetPowers what are the powers they have
 GetPowers what are some of his powers
+GetPowers what are {Character} powers
+GetPowers what powers does {Character} have
+GetPowers what types of powers does {Character} have
+GetPowers what are the powers of {Character}
 GetPowers what are some of {Character} powers
 
-GetPublisher who publishes comic books with {Character}
 GetPublisher who publishes comic books with them
 GetPublisher who publishes comic books with her
-GetPublisher what publisher makes {Character} comics
 GetPublisher what publisher make their comics
-GetPublisher who is the publisher for {Character}
 GetPublisher who is the publisher for them
 GetPublisher who is the publisher for him
+GetPublisher who publishes them
+GetPublisher who publishes comic books with {Character}
+GetPublisher what publisher makes {Character} comics
+GetPublisher who is the publisher for {Character}
 GetPublisher who publishes {Character}
+GetPublisher who publishes comic books with {Team}
+GetPublisher who publishes comic books with the {Team}
+GetPublisher what publisher makes {Team} comics
+GetPublisher what publisher makes the {Team} comics
+GetPublisher who is the publisher for {Team}
+GetPublisher who is the publisher for the {Team}
+GetPublisher who publishes {Team}
+GetPublisher who publishes the {Team}
 
-GetRealName what is {Character} real name
 GetRealName what is their real name
 GetRealName what is his real name
-GetRealName what is {Character} birth name
 GetRealName what is her real name
 GetRealName what is their real name
+GetRealName what is their secret identity
+GetRealName what is {Character} real name
+GetRealName what is {Character} birth name
 GetRealName what is the real name of {Character}
 GetRealName what is the birth name of {Character}
 GetRealName what is {Character} secret identity
-GetRealName what is their secret identity
 GetRealName what is the secret identity of {Character}
 
-GetTeams what teams is {Character} on
-GetTeams what teams has {Character} been on
 GetTeams what teams are they on
 GetTeams what teams is he on
 GetTeams what are some teams she's on
+GetTeams what teams is {Character} on
+GetTeams what teams has {Character} been on
 GetTeams what teams has {Character} been a part of
 GetTeams what teams has {Character} been a member of

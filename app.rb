@@ -29,45 +29,24 @@ post '/' do
       return Utils.build_res_obj(message)
     # Intent Request
     elsif request_payload['request']['type'] == 'IntentRequest'
-      # Get intent, send to appropriate method.
-      intent = request_payload['request']['intent']['name']
 
-      if intent == "GetBasicInfo"
-        res = get_basic_info(request_payload)
-      elsif intent == "GetAliases"
-        res = get_aliases(request_payload)
-      elsif intent == "GetBirthDate"
-        res = get_birth_date(request_payload)
-      elsif intent == "GetFirstIssue"
-        res = get_first_issue(request_payload)
-      elsif intent == "GetIssueCount"
-        res = get_issue_count(request_payload)
-      elsif intent == "GetPowers"
-        res = get_powers(request_payload)
-      elsif intent == "GetPublisher"
-        res = get_publisher(request_payload)
-      elsif intent == "GetRealName"
-        res = get_real_name(request_payload)
-      elsif intent == "GetTeams"
-        res = get_teams(request_payload)
-      elsif intent == "AMAZON.YesIntent"
-        res = yes_intent(request_payload)
-      elsif intent == "AMAZON.NoIntent"
-        res = no_intent(request_payload)
-      elsif intent == "AMAZON.StopIntent" || intent == "AMAZON.CancelIntent"
-        res = end_session(request_payload)
-      else
-        message = "This skill is incorrectly configured. Please contact the " +
-                  "skill creator. Good-bye!"
-        res = Utils.build_end_res_obj(message)
-      end
+      res = Timeout::timeout(4) {
+        intent_handler(request_payload)
+      }
 
+      puts "OUTPUT\n"
+      puts res
       return res
     # SessionEndedRequest
     else
       puts "Session Ended."
       return Utils.build_end_res_obj("Goodbye!")
     end
+  rescue Timeout::Error => e
+    puts "Timeout!" + e.message
+    message = "I can't get that information for you right now. What else " +
+              "would you like to know?"
+    return Utils.build_res_obj(message)
   rescue => e
     puts "ERROR\n" + e.message
     puts e.backtrace
@@ -75,6 +54,45 @@ post '/' do
     message = "I'm sorry, there was an error in this skill. Good-bye!"
     return Utils.build_end_res_obj(message)
   end
+end
+
+def intent_handler(req)
+  # Get intent, send to appropriate method.
+  intent = req['request']['intent']['name']
+
+  if intent == "GetBasicInfo"
+    res = get_basic_info(req)
+  elsif intent == "GetAliases"
+    res = get_aliases(req)
+  elsif intent == "GetBirthDate"
+    res = get_birth_date(req)
+  elsif intent == "GetFirstIssue"
+    res = get_first_issue(req)
+  elsif intent == "GetIssueCount"
+    res = get_issue_count(req)
+  elsif intent == "GetMembers"
+    res = get_members(req)
+  elsif intent == "GetPowers"
+    res = get_powers(req)
+  elsif intent == "GetPublisher"
+    res = get_publisher(req)
+  elsif intent == "GetRealName"
+    res = get_real_name(req)
+  elsif intent == "GetTeams"
+    res = get_teams(req)
+  elsif intent == "AMAZON.YesIntent"
+    res = yes_intent(req)
+  elsif intent == "AMAZON.NoIntent"
+    res = no_intent(req)
+  elsif intent == "AMAZON.StopIntent" || intent == "AMAZON.CancelIntent"
+    res = end_session(req)
+  else
+    message = "This skill is incorrectly configured. Please contact the " +
+              "skill creator. Good-bye!"
+    res = Utils.build_end_res_obj(message)
+  end
+
+  return res
 end
 
 def get_basic_info(req)
@@ -85,6 +103,7 @@ def get_basic_info(req)
   if subject == nil && req['request']['intent']['slots']['Team'] != nil
     subject = req['request']['intent']['slots']['Team']['value']
   end
+
   if subject == nil
     no_subject_message = "I'm not sure who you're asking about. Please " +
                          "try asking again."
@@ -95,13 +114,10 @@ def get_basic_info(req)
   subject = subject.split.map(&:capitalize).join(' ')
 
   description = ""
-  attribution = ""
-  pic_url = nil
-  card_text = nil
 
   marvel_res, marvel_found = Marvel.get_character(subject)
   cv_res, cv_found, resource_type = ComicVine.search(subject)
-  puts cv_res
+
   # Review results from APIs, and decide what to return.
   card = { "title" => subject }
   ## No Results
@@ -182,57 +198,85 @@ def get_basic_info(req)
 
   end
 
+  if resource_type != nil
+    resource_type = resource_type + "s"
+  end
+
   sessionAttributes = {
-    "subject" => subject
+    "subject" => subject,
+    "obj" => cv_res,
+    "resource_type" => resource_type
   }
+
+  if cv_found && cv_res.to_json.to_s.bytesize > 12000
+    sessionAttributes["obj"] = nil
+  end
 
   return Utils.build_res_obj(description, sessionAttributes, card)
 end
 
 def get_aliases(req)
-  not_found = -> subject {
+  not_found = -> subject, resource_type {
     return "I could not find any aliases for #{subject}."
   }
-  found = -> res {
+  found = -> res, resource_type {
     alia_arr = res["aliases"].split(/\r\n|\n/)
     sess_attr = {}
 
     if alia_arr.size > 5
-      say_now = "#{res["name"]}'s aliases include #{alia_arr[0]}, " +
-                "#{alia_arr[1]}, #{alia_arr[2]}, and #{alia_arr.size - 3} " +
-                "more. Would you like to hear the rest?"
+      if resource_type == "characters"
+        say_now = "#{res["name"]}'s aliases include #{alia_arr[0]}, " +
+                  "#{alia_arr[1]}, #{alia_arr[2]}, and #{alia_arr.size - 3} " +
+                  "more. Would you like to hear the rest?"
+      elsif resource_type == "teams"
+        say_now = "Aliases for #{res["name"]} include #{alia_arr[0]}, " +
+                  "#{alia_arr[1]}, #{alia_arr[2]}, and #{alia_arr.size - 3} " +
+                  "more. Would you like to hear the rest?"
+      end
+
       rest_except_last = alia_arr[3..(alia_arr.size-2)].join(", ")
       last_alias = alia_arr[alia_arr.size-1]
-      extra_info = "#{res["name"]} has also been called " +
-                   "#{rest_except_last}, and #{last_alias}."
+
+      if resource_type == "characters"
+        extra_info = "#{res["name"]} has also been called " +
+                     "#{rest_except_last}, and #{last_alias}."
+      elsif resource_type == "teams"
+        extra_info = "#{res["name"]} have also been called " +
+                     "#{rest_except_last}, and #{last_alias}."
+      end
 
       sess_attr["extraInfo"] = extra_info
       return say_now, sess_attr
     else
       formatted_list = alia_arr.join(", ")
-      return "#{res["name"]}'s aliases include #{formatted_list}."
+
+      if resource_type == "characters"
+        return "#{res["name"]}'s aliases include #{formatted_list}."
+      elsif resource_type == "teams"
+        return "Aliases for #{res["name"]} include #{formatted_list}."
+      end
     end
   }
 
-  return Utils.get_character_attr(req, "aliases", not_found, found)
+  return Utils.get_attribute(req, "aliases", not_found, found)
 end
 
 def get_birth_date(req)
-  not_found = -> subject {
+  not_found = -> subject, resource_type {
     return "I could not find a birth date for #{subject}."
   }
-  found = -> res {
+  found = -> res, resource_type {
     return "#{res["name"]} was born on #{res["birth"]}."
   }
 
-  return Utils.get_character_attr(req, "birth", not_found, found)
+  return Utils.get_attribute(req, "birth", not_found, found)
 end
 
 def get_first_issue(req)
-  not_found = -> subject {
+  not_found = -> subject, resource_type {
     return "I could not find the first issue #{subject} appeared in."
   }
-  found = -> res {
+  found = -> res, resource_type {
     issue_id = res["first_appeared_in_issue"]["id"]
     issue_url = "http://comicvine.gamespot.com/api/issue/4000-" +
                 issue_id.to_s + "/"
@@ -244,28 +288,62 @@ def get_first_issue(req)
            "was dated #{iss_det["cover_date"]}."
   }
 
-  return Utils.get_character_attr(req, "first_appeared_in_issue",
+  return Utils.get_attribute(req, "first_appeared_in_issue",
                                   not_found, found)
 end
 
 def get_issue_count(req)
-  not_found = -> subject {
+  not_found = -> subject, resource_type {
     return "I'm not sure how many issues #{subject} has appeared in."
   }
-  found = -> res {
+  found = -> res, resource_type {
     return "#{res["name"]} has appeared in approximately " +
            "#{res["count_of_issue_appearances"]} issues."
   }
 
-  return Utils.get_character_attr(req, "count_of_issue_appearances",
+  return Utils.get_attribute(req, "count_of_issue_appearances",
                                   not_found, found)
 end
 
+def get_members(req)
+  not_found = -> subject, resource_type {
+    return "I could not find any members for #{subject}."
+  }
+  found = -> res, resource_type {
+    sess_attr = {}
+    member_arr = []
+    res["characters"].each { |member|
+      member_arr << member["name"]
+    }
+
+    if member_arr.size > 40
+      message = "#{res["name"]} have had #{member_arr.size} members, " +
+                "including #{member_arr[0]}, #{member_arr[1]}, and " +
+                "#{member_arr[2]}."
+      return message
+    elsif member_arr.size > 5
+      say_now = "Members of #{res["name"]} include #{member_arr[0]}, " +
+                "#{member_arr[1]}, #{member_arr[2]}, and #{member_arr.size} " +
+                "more. Would you like to hear the rest?"
+      rest_except_last = member_arr[3..(member_arr.size-2)].join(", ")
+      extra_info = "Other members of #{res["name"]} include " +
+                   "#{rest_except_last}, and #{member_arr.last}."
+      sess_attr["extraInfo"] = extra_info
+      return say_now, sess_attr
+    else
+      formatted_list = member_arr.join(", ")
+      return "Members of #{res["name"]} include #{formatted_list}."
+    end
+  }
+
+  return Utils.get_attribute(req, "characters", not_found, found)
+end
+
 def get_powers(req)
-  not_found = -> subject {
+  not_found = -> subject, resource_type {
     return "I could not find any powers for #{subject}."
   }
-  found = -> res {
+  found = -> res, resource_type {
     pow_arr = []
     res["powers"].each { |power|
       pow_arr << power["name"]
@@ -290,36 +368,36 @@ def get_powers(req)
     end
   }
 
-  return Utils.get_character_attr(req, "powers", not_found, found)
+  return Utils.get_attribute(req, "powers", not_found, found)
 end
 
 def get_publisher(req)
-  not_found = -> subject {
+  not_found = -> subject, resource_type {
     return "I could not find the publisher for #{subject}."
   }
-  found = -> res {
+  found = -> res, resource_type {
     return "The publisher of #{res["name"]} comics is #{res["publisher"]["name"]}."
   }
 
-  return Utils.get_character_attr(req, "publisher", not_found, found)
+  return Utils.get_attribute(req, "publisher", not_found, found)
 end
 
 def get_real_name(req)
-  not_found = -> subject {
+  not_found = -> subject, resource_type {
     return "I could not find a real name for #{subject}."
   }
-  found = -> res {
+  found = -> res, resource_type {
     return "The real name of #{res["name"]} is #{res["real_name"]}."
   }
 
-  return Utils.get_character_attr(req, "real_name", not_found, found)
+  return Utils.get_attribute(req, "real_name", not_found, found)
 end
 
 def get_teams(req)
-  not_found = -> subject {
+  not_found = -> subject, resource_type {
     return "I could not find any teams for #{subject}."
   }
-  found = -> res {
+  found = -> res, resource_type {
     team_arr = []
     res["teams"].each { |team|
       team_arr << team["name"]
@@ -345,7 +423,7 @@ def get_teams(req)
     end
   }
 
-  return Utils.get_character_attr(req, "teams", not_found, found)
+  return Utils.get_attribute(req, "teams", not_found, found)
 end
 
 def yes_intent(req)

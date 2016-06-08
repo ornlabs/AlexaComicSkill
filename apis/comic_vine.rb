@@ -21,7 +21,8 @@ module ComicVine
       :params => params
     }
 
-    return JSON.parse((RestClient.get request_url, params).body)
+    res = RestClient.get request_url, params
+    return JSON.parse(res.body)
   end
 
   # Searches over multiple resource types.
@@ -40,24 +41,45 @@ module ComicVine
     }
 
     begin
-      results = JSON.parse((RestClient.get request_url, params).body)
+      response = RestClient.get request_url, params
+      results = JSON.parse(response.body)
 
-      result_index = results["results"].index{ |result|
-        result["name"].downcase == subject.downcase
-      }
+      exact_matches = []
 
-      if result_index == nil
-        return nil, false
-      else
-        detail_path = results["results"][result_index]["api_detail_url"]
-        det_result = get_detailed_info(detail_path)["results"]
-        return det_result, true,
-               results["results"][result_index]["resource_type"]
+      results["results"].each do |result|
+        if result["name"].downcase == subject.downcase
+          exact_matches << result
+        end
       end
+
+      if exact_matches == []
+        results["results"].each do |result|
+          if result["name"].downcase == "the " + subject.downcase
+            exact_matches << result
+          end
+        end
+
+        if exact_matches == []
+          return nil, false
+        end
+      end
+
+      best_result = exact_matches.max_by do |match|
+        if match["count_of_issue_appearances"] != nil
+          match["count_of_issue_appearances"]
+        else
+          0
+        end
+      end
+
+      detail_path = best_result["api_detail_url"]
+      det_result = get_detailed_info(detail_path)["results"]
+      return det_result, true, best_result["resource_type"]
     rescue NameError => e
       puts "Error while examining Comic Vine API response.\n" + e.message
     rescue RestClient::Exception => e
-      puts "Error calling Comic Vine API.\n" + e.response
+      puts "Error calling Comic Vine API.\n"
+      puts e.response
     end
 
     return nil, false
@@ -73,6 +95,11 @@ module ComicVine
       "volume"
     end
 
+    if full_path.include? "team"
+      field_list = "aliases,characters,first_appeared_in_issue,publisher," +
+      "name,count_of_issue_appearances,deck"
+    end
+
     params = {
       "api_key" => ENV['COMIC_VINE_KEY'],
       "format" => "json",
@@ -83,7 +110,8 @@ module ComicVine
       :params => params
     }
 
-    return JSON.parse((RestClient.get full_path, params).body)
+    res = RestClient.get full_path, params
+    return JSON.parse(res.body)
   end
 
   # Doesn't work with every resource type - only when you want to search
@@ -97,7 +125,7 @@ module ComicVine
 
     begin
       res = query(path, filter, search_field_list)
-      result = nil
+      det_info = nil
 
       if res["number_of_page_results"] > 0
         found = true
@@ -106,16 +134,18 @@ module ComicVine
         result_index = 0
 
         res["results"].each_with_index do |result, index|
-          if result["count_of_issue_appearances"] > highest_count
-            highest_count = result["count_of_issue_appearances"]
-            result_index = index
+          if result["count_of_issue_appearances"] != nil
+            if result["count_of_issue_appearances"] > highest_count
+              highest_count = result["count_of_issue_appearances"]
+              result_index = index
+            end
           end
         end
 
         # Get more detailed info about the selected result.
         detail_path = res["results"][result_index]["api_detail_url"]
 
-        result = get_detailed_info(detail_path)["results"]
+        det_info = get_detailed_info(detail_path)["results"]
       end
     rescue NameError => e
       puts "Error while examining Comic Vine API response.\n" + e.message
@@ -123,6 +153,6 @@ module ComicVine
       puts "Error calling Comic Vine API.\n" + e.response
     end
 
-    return result, found
+    return det_info, found
   end
 end

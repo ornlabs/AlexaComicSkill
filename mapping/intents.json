@@ -19,6 +19,10 @@
         {
           "name": "Character",
           "type": "COMIC_CHARACTERS"
+        },
+        {
+          "name": "Team",
+          "type": "COMIC_TEAMS"
         }
       ]
     },
@@ -37,6 +41,10 @@
         {
           "name": "Character",
           "type": "COMIC_CHARACTERS"
+        },
+        {
+          "name": "Team",
+          "type": "COMIC_TEAMS"
         }
       ]
     },
@@ -46,6 +54,15 @@
         {
           "name": "Character",
           "type": "COMIC_CHARACTERS"
+        }
+      ]
+    },
+    {
+      "intent": "GetMembers",
+      "slots": [
+        {
+          "name": "Team",
+          "type": "COMIC_TEAMS"
         }
       ]
     },
@@ -64,6 +81,10 @@
         {
           "name": "Character",
           "type": "COMIC_CHARACTERS"
+        },
+        {
+          "name": "Team",
+          "type": "COMIC_TEAMS"
         }
       ]
     },

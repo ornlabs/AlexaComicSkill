@@ -1,18 +1,6 @@
 module Utils
-  def Utils.get_character_attr(req, attr, not_found_mess, found_mess)
-    return get_attribute(
-      req,
-      attr,
-      "Character",
-      "characters",
-      not_found_mess,
-      found_mess
-    )
-  end
-
-  def Utils.get_attribute(req, attr, sub_slot_name, cv_resource_name,\
-                          not_found_mess, found_mess)
-    subject = Utils.determine_subject(req, sub_slot_name)
+  def Utils.get_attribute(req, attr, not_found_mess, found_mess)
+    subject, resource_type = Utils.determine_subject(req)
 
     if subject == nil
       no_subject_message = "I'm not sure what you're asking about. Please " +
@@ -20,15 +8,48 @@ module Utils
       return Utils.build_res_obj(no_subject_message)
     end
 
-    cv_res, cv_found = ComicVine.get_by_name(subject, cv_resource_name)
+    saved_obj = nil
 
-    sessionAttributes = { "subject" => subject }
+    if req["session"]["attributes"] != nil
+      saved_obj = req["session"]["attributes"]["obj"]
+
+      if saved_obj == nil || saved_obj["name"].downcase != subject.downcase
+        saved_obj = nil
+      end
+    end
+    puts "IS saved_obj NIL: " + (saved_obj == nil).to_s
+    if saved_obj != nil
+      cv_found = true
+      cv_res = saved_obj
+    else
+      cv_res, cv_found = ComicVine.get_by_name(subject, resource_type)
+    end
+
+    sessionAttributes = {
+      "subject" => subject,
+      "obj" => cv_res,
+      "resource_type" => resource_type
+    }
+
+    if cv_found && cv_res.to_json.to_s.bytesize > 12000
+      sessionAttributes["obj"] = nil
+    end
+
+    sub_to_pass = subject
+    cv_res_to_pass = cv_res
+
+    if resource_type == "teams"
+      sub_to_pass = "The " + subject
+      if cv_res != nil
+        cv_res_to_pass["name"] = "The " + cv_res_to_pass["name"]
+      end
+    end
 
     if !cv_found || cv_res[attr] == nil
-      message = not_found_mess.call(subject)
+      message = not_found_mess.call(sub_to_pass, resource_type)
       return Utils.build_res_obj(message, sessionAttributes)
     else
-      message, sess_attr = found_mess.call(cv_res)
+      message, sess_attr = found_mess.call(cv_res_to_pass, resource_type)
 
       if sess_attr != nil
         sessionAttributes = sessionAttributes.merge(sess_attr)
@@ -39,8 +60,18 @@ module Utils
   end
 
   # Will return nil if no subject is found.
-  def Utils.determine_subject(req, slot_name)
-    slot_value = req['request']['intent']['slots'][slot_name]['value']
+  def Utils.determine_subject(req)
+    slot_value = nil
+    resource_type = nil
+    slots = req['request']['intent']['slots']
+    if slots['Character'] != nil && slots["Character"]["value"] != nil
+      slot_value = slots['Character']['value']
+      resource_type = "characters"
+    end
+    if slots['Team'] != nil && slots["Team"]["value"] != nil
+      slot_value = slots['Team']['value']
+      resource_type = "teams"
+    end
 
     saved_subject = nil
     if req["session"]["attributes"] != nil
@@ -51,11 +82,12 @@ module Utils
       subject = nil
     elsif slot_value == nil
       subject = saved_subject
+      resource_type = req["session"]["attributes"]["resource_type"]
     else
       subject = handleSpecialCases(unposs(slot_value))
     end
 
-    return subject
+    return subject, resource_type
   end
 
   # Everything but speech_text is optional.
@@ -144,6 +176,11 @@ module Utils
       if subject.downcase == "spiderman"
         subject = "Spider-Man"
       end
+    end
+
+    # Make "Justice League" return "Justice League of America"
+    if subject.downcase == "justice league"
+      subject = "Justice League of America"
     end
 
     return subject
