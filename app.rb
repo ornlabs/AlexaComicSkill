@@ -30,7 +30,7 @@ post '/' do
     # Intent Request
     elsif request_payload['request']['type'] == 'IntentRequest'
 
-      res = Timeout::timeout(4) {
+      res = Timeout::timeout(7) {
         intent_handler(request_payload)
       }
 
@@ -102,6 +102,12 @@ def get_basic_info(req)
   end
   if subject == nil && req['request']['intent']['slots']['Team'] != nil
     subject = req['request']['intent']['slots']['Team']['value']
+  end
+  if subject == nil && req['request']['intent']['slots']['Location'] != nil
+    subject = req['request']['intent']['slots']['Location']['value']
+  end
+  if subject == nil && req['request']['intent']['slots']['Object'] != nil
+    subject = req['request']['intent']['slots']['Object']['value']
   end
 
   if subject == nil
@@ -228,7 +234,7 @@ def get_aliases(req)
         say_now = "#{res["name"]}'s aliases include #{alia_arr[0]}, " +
                   "#{alia_arr[1]}, #{alia_arr[2]}, and #{alia_arr.size - 3} " +
                   "more. Would you like to hear the rest?"
-      elsif resource_type == "teams"
+      else
         say_now = "Aliases for #{res["name"]} include #{alia_arr[0]}, " +
                   "#{alia_arr[1]}, #{alia_arr[2]}, and #{alia_arr.size - 3} " +
                   "more. Would you like to hear the rest?"
@@ -237,11 +243,11 @@ def get_aliases(req)
       rest_except_last = alia_arr[3..(alia_arr.size-2)].join(", ")
       last_alias = alia_arr[alia_arr.size-1]
 
-      if resource_type == "characters"
-        extra_info = "#{res["name"]} has also been called " +
-                     "#{rest_except_last}, and #{last_alias}."
-      elsif resource_type == "teams"
+      if resource_type == "teams"
         extra_info = "#{res["name"]} have also been called " +
+                     "#{rest_except_last}, and #{last_alias}."
+      else
+        extra_info = "#{res["name"]} has also been called " +
                      "#{rest_except_last}, and #{last_alias}."
       end
 
@@ -252,7 +258,7 @@ def get_aliases(req)
 
       if resource_type == "characters"
         return "#{res["name"]}'s aliases include #{formatted_list}."
-      elsif resource_type == "teams"
+      else
         return "Aliases for #{res["name"]} include #{formatted_list}."
       end
     end

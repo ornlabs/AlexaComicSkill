@@ -8,22 +8,58 @@ GetBasicInfo tell me about the {Team}
 GetBasicInfo who are {Team}
 GetBasicInfo who are the {Team}
 GetBasicInfo who {Team} are
+GetBasicInfo tell me about {Location}
+GetBasicInfo tell me about the {Location}
+GetBasicInfo tell me what {Location} is
+GetBasicInfo tell me what the {Location} is
+GetBasicInfo tell me where {Location} is
+GetBasicInfo tell me where the {Location} is
+GetBasicInfo what is {Location}
+GetBasicInfo what is the {Location}
+GetBasicInfo where is {Location}
+GetBasicInfo where is the {Location}
+GetBasicInfo tell me about {Object}
+GetBasicInfo tell me about the {Object}
+GetBasicInfo tell me what {Object} is
+GetBasicInfo tell me what the {Object} is
+GetBasicInfo what is {Object}
+GetBasicInfo what is the {Object}
 
 GetAliases what are his aliases
 GetAliases what are some of his other names
+GetAliases what are some other names for her
 GetAliases what else are they called
 GetAliases what else is she called
 GetAliases what are some of their other identities
 GetAliases what are {Character} aliases
 GetAliases what are some of {Character} other names
+GetAliases what are some other names for {Character}
 GetAliases what else is {Character} called
 GetAliases what are some of {Character} other identities
 GetAliases what are {Team} aliases
 GetAliases what are the {Team} aliases
 GetAliases what are some of {Team} other names
 GetAliases what are some of the {Team} other names
+GetAliases what are some other names for {Team}
+GetAliases what are some other names for the {Team}
 GetAliases what else are {Team} called
 GetAliases what else are the {Team} called
+GetAliases what are {Location} aliases
+GetAliases what are the {Location} aliases
+GetAliases what are some of {Location} other names
+GetAliases what are some of the {Location} other names
+GetAliases what are some other names for {Location}
+GetAliases what are some other names for the {Location}
+GetAliases what else is {Location} called
+GetAliases what else is the {Location} called
+GetAliases what are {Object} aliases
+GetAliases what are the {Object} aliases
+GetAliases what are some of {Object} other names
+GetAliases what are some of the {Object} other names
+GetAliases what are some other names for {Object}
+GetAliases what are some other names for the {Object}
+GetAliases what else is {Object} called
+GetAliases what else is the {Object} called
 
 GetBirthDate when was he born
 GetBirthDate when was she born
@@ -34,7 +70,11 @@ GetBirthDate what is their birthday
 GetBirthDate what's his birthday
 GetBirthDate what's her birthday
 GetBirthDate what's their birthday
+GetBirthDate what year were they born
+GetBirthDate what year was he born
 GetBirthDate when was {Character} born
+GetBirthDate what day was {Character} born
+GetBirthDate what year was {Character} born
 GetBirthDate what is {Character} birthday
 
 GetFirstIssue what was their first appearance
@@ -61,6 +101,26 @@ GetFirstIssue what year did {Team} first appear
 GetFirstIssue what year did the {Team} first appear
 GetFirstIssue what was the first issue with {Team}
 GetFirstIssue what was the first issue with the {Team}
+GetFirstIssue what was the first appearance of {Location}
+GetFirstIssue what was the first appearance of the {Location}
+GetFirstIssue what comic did {Location} first appear in
+GetFirstIssue what comic did the {Location} first appear in
+GetFirstIssue when was the first appearance of {Location}
+GetFirstIssue when was the first appearance of the {Location}
+GetFirstIssue what year did {Location} first appear
+GetFirstIssue what year did the {Location} first appear
+GetFirstIssue what was the first issue with {Location}
+GetFirstIssue what was the first issue with the {Location}
+GetFirstIssue what was the first appearance of {Object}
+GetFirstIssue what was the first appearance of the {Object}
+GetFirstIssue what comic did {Object} first appear in
+GetFirstIssue what comic did the {Object} first appear in
+GetFirstIssue when was the first appearance of {Object}
+GetFirstIssue when was the first appearance of the {Object}
+GetFirstIssue what year did {Object} first appear
+GetFirstIssue what year did the {Object} first appear
+GetFirstIssue what was the first issue with {Object}
+GetFirstIssue what was the first issue with the {Object}
 
 GetIssueCount how many comic books have they appeared in
 GetIssueCount how many comic books has he appeared in
@@ -68,6 +128,10 @@ GetIssueCount how many issues are they in
 GetIssueCount how many issues is she in
 GetIssueCount how many issues is {Character} in
 GetIssueCount how many comic books has {Character} appeared in
+GetIssueCount how many issues is {Location} in
+GetIssueCount how many comic books has {Location} appeared in
+GetIssueCount how many issues is {Object} in
+GetIssueCount how many comic books has {Object} appeared in
 
 GetMembers who are their members
 GetMembers who are the members

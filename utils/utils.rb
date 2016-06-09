@@ -38,10 +38,12 @@ module Utils
     sub_to_pass = subject
     cv_res_to_pass = cv_res
 
-    if resource_type == "teams"
-      sub_to_pass = "The " + subject
-      if cv_res != nil
-        cv_res_to_pass["name"] = "The " + cv_res_to_pass["name"]
+    if resource_type == "teams" || resource_type == "objects"
+      unless attr == "publisher"
+        sub_to_pass = "The " + subject
+        if cv_res != nil
+          cv_res_to_pass["name"] = "The " + cv_res_to_pass["name"]
+        end
       end
     end
 

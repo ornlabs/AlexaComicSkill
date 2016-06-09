@@ -93,10 +93,11 @@ module ComicVine
     if full_path.include? "issue"
       field_list = "cover_date,deck,image,issue_number,name,site_detail_url," +
       "volume"
-    end
-
-    if full_path.include? "team"
+    elsif full_path.include? "team"
       field_list = "aliases,characters,first_appeared_in_issue,publisher," +
+      "name,count_of_issue_appearances,deck"
+    elsif (full_path.include? "location") || (full_path.include? "object")
+      field_list = "aliases,first_appeared_in_issue," +
       "name,count_of_issue_appearances,deck"
     end
 

@@ -10,6 +10,14 @@
         {
           "name": "Team",
           "type": "COMIC_TEAMS"
+        },
+        {
+          "name": "Location",
+          "type": "COMIC_LOCATIONS"
+        },
+        {
+          "name": "Object",
+          "type": "COMIC_OBJECTS"
         }
       ]
     },
@@ -23,6 +31,14 @@
         {
           "name": "Team",
           "type": "COMIC_TEAMS"
+        },
+        {
+          "name": "Location",
+          "type": "COMIC_LOCATIONS"
+        },
+        {
+          "name": "Object",
+          "type": "COMIC_OBJECTS"
         }
       ]
     },
@@ -45,6 +61,14 @@
         {
           "name": "Team",
           "type": "COMIC_TEAMS"
+        },
+        {
+          "name": "Location",
+          "type": "COMIC_LOCATIONS"
+        },
+        {
+          "name": "Object",
+          "type": "COMIC_OBJECTS"
         }
       ]
     },
@@ -54,6 +78,14 @@
         {
           "name": "Character",
           "type": "COMIC_CHARACTERS"
+        },
+        {
+          "name": "Location",
+          "type": "COMIC_LOCATIONS"
+        },
+        {
+          "name": "Object",
+          "type": "COMIC_OBJECTS"
         }
       ]
     },
