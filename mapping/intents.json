@@ -142,6 +142,9 @@
       "intent": "AMAZON.CancelIntent"
     },
     {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
       "intent": "AMAZON.NoIntent"
     },
     {

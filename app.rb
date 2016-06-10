@@ -100,6 +100,8 @@ def intent_handler(req)
     res = yes_intent(req)
   elsif intent == "AMAZON.NoIntent"
     res = no_intent(req)
+  elsif intent == "AMAZON.HelpIntent"
+    res = help_intent(req)
   elsif intent == "AMAZON.StopIntent" || intent == "AMAZON.CancelIntent"
     res = end_session(req)
   else
@@ -472,6 +474,18 @@ def no_intent(req)
   else
     return Utils.build_res_obj(message)
   end
+end
+
+def help_intent(req)
+  message = "You can ask questions and make requests like: " +
+    "Who is Captain America? " +
+    "Tell me about Gotham. " +
+    "When was Spider Man born? " +
+    "What are some aliases for Black Widow? " +
+    "What was the first appearance of the X-Men? or " +
+    "How many comic books has Superman appeared in? " +
+    "So, what would you like to know?"
+  return Utils.build_res_obj(message)
 end
 
 def end_session(req)
