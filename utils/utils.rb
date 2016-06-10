@@ -17,7 +17,7 @@ module Utils
         saved_obj = nil
       end
     end
-    puts "IS saved_obj NIL: " + (saved_obj == nil).to_s
+
     if saved_obj != nil
       cv_found = true
       cv_res = saved_obj
@@ -69,10 +69,15 @@ module Utils
     if slots['Character'] != nil && slots["Character"]["value"] != nil
       slot_value = slots['Character']['value']
       resource_type = "characters"
-    end
-    if slots['Team'] != nil && slots["Team"]["value"] != nil
+    elsif slots['Team'] != nil && slots["Team"]["value"] != nil
       slot_value = slots['Team']['value']
       resource_type = "teams"
+    elsif slots['Location'] != nil && slots["Location"]["value"] != nil
+      slot_value = slots['Location']['value']
+      resource_type = "locations"
+    elsif slots['Object'] != nil && slots["Object"]["value"] != nil
+      slot_value = slots['Object']['value']
+      resource_type = "objects"
     end
 
     saved_subject = nil
