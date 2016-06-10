@@ -80,6 +80,7 @@ GetBirthDate what's their birthday
 GetBirthDate what year were they born
 GetBirthDate what year was he born
 GetBirthDate when was {Character} born
+GetBirthDate when {Character} was born
 GetBirthDate what day was {Character} born
 GetBirthDate what year was {Character} born
 GetBirthDate what is {Character} birthday
