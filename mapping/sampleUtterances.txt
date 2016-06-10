@@ -33,6 +33,7 @@ GetAliases what else is she called
 GetAliases what are some of their other identities
 GetAliases what are {Character} aliases
 GetAliases what are some of {Character} other names
+GetAliases what are some aliases for {Character}
 GetAliases what are some other names for {Character}
 GetAliases what else is {Character} called
 GetAliases what are some of {Character} other identities
@@ -41,7 +42,9 @@ GetAliases what are the {Team} aliases
 GetAliases what are some of {Team} other names
 GetAliases what are some of the {Team} other names
 GetAliases what are some other names for {Team}
+GetAliases what are some aliases for {Team}
 GetAliases what are some other names for the {Team}
+GetAliases what are some aliases for the {Team}
 GetAliases what else are {Team} called
 GetAliases what else are the {Team} called
 GetAliases what are {Location} aliases
@@ -49,7 +52,9 @@ GetAliases what are the {Location} aliases
 GetAliases what are some of {Location} other names
 GetAliases what are some of the {Location} other names
 GetAliases what are some other names for {Location}
+GetAliases what are some aliases for {Location}
 GetAliases what are some other names for the {Location}
+GetAliases what are some aliases for the {Location}
 GetAliases what else is {Location} called
 GetAliases what else is the {Location} called
 GetAliases what are {Object} aliases
@@ -57,7 +62,9 @@ GetAliases what are the {Object} aliases
 GetAliases what are some of {Object} other names
 GetAliases what are some of the {Object} other names
 GetAliases what are some other names for {Object}
+GetAliases what are some aliases for {Object}
 GetAliases what are some other names for the {Object}
+GetAliases what are some aliases for the {Object}
 GetAliases what else is {Object} called
 GetAliases what else is the {Object} called
 

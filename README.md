@@ -40,15 +40,15 @@ Available for Characters, Locations, Objects, and Teams
 
 > *Tell me about Metropolis.*
 
-> *Tell me about Rocket Raccoon.*
+> *Tell me about Thor.*
 
 ### Aliases
 
 Available for Characters, Locations, Objects, and Teams
 
-> *What are some of Thor's other names?*
+> *What are some of Cyclops' other names?*
 
-> *What are Black Widow's aliases?*
+> *What are some aliases for Black Widow?*
 
 ### Birthdays
 
