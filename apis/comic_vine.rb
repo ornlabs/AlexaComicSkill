@@ -32,7 +32,7 @@ module ComicVine
     params = {
       "api_key" => ENV['COMIC_VINE_KEY'],
       "format" => "json",
-      "resources" => "character,concept,object,location,publisher,person,team",
+      "resources" => "character,concept,object,location,team",
       "query" => subject
     }
 

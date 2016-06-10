@@ -97,17 +97,22 @@ end
 
 def get_basic_info(req)
   subject = nil
+  resource_type = nil
   if req['request']['intent']['slots']['Character'] != nil
     subject = req['request']['intent']['slots']['Character']['value']
+    resource_type = "characters"
   end
   if subject == nil && req['request']['intent']['slots']['Team'] != nil
     subject = req['request']['intent']['slots']['Team']['value']
+    resource_type = "teams"
   end
   if subject == nil && req['request']['intent']['slots']['Location'] != nil
     subject = req['request']['intent']['slots']['Location']['value']
+    resource_type = "locations"
   end
   if subject == nil && req['request']['intent']['slots']['Object'] != nil
     subject = req['request']['intent']['slots']['Object']['value']
+    resource_type = "objects"
   end
 
   if subject == nil
@@ -122,7 +127,7 @@ def get_basic_info(req)
   description = ""
 
   marvel_res, marvel_found = Marvel.get_character(subject)
-  cv_res, cv_found, resource_type = ComicVine.search(subject)
+  cv_res, cv_found = ComicVine.get_by_name(subject, resource_type)
 
   # Review results from APIs, and decide what to return.
   card = { "title" => subject }
@@ -202,10 +207,6 @@ def get_basic_info(req)
       card["text"] += "---\nTeams: " + team_arr.join(", ") + "\n"
     end
 
-  end
-
-  if resource_type != nil
-    resource_type = resource_type + "s"
   end
 
   sessionAttributes = {
