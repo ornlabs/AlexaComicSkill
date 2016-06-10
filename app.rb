@@ -1,3 +1,4 @@
+require 'alexa_verifier'
 require 'digest'
 require 'json'
 require 'rest-client'
@@ -10,7 +11,22 @@ require_relative 'utils/utils'
 post '/' do
   begin
     request.body.rewind
-    request_payload = JSON.parse request.body.read
+    raw_request = request.body.read
+
+    # Verify request is from Alexa and is valid.
+    begin
+      verifier = AlexaVerifier.new
+      verifier.verify!(
+        env["HTTP_SIGNATURECERTCHAINURL"],
+        env["HTTP_SIGNATURE"],
+        raw_request
+      )
+    rescue AlexaVerifier::VerificationError => e
+      puts "Unable to verify request is valid and from Alexa.\n" + e.message
+      return ""
+    end
+
+    request_payload = JSON.parse raw_request
 
     puts "REQUEST:\n"
     puts request_payload

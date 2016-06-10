@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    alexa_verifier (0.1.0)
     digest (0.0.1)
     domain_name (0.5.20160310)
       unf (>= 0.0.5, < 1.0.0)
@@ -28,6 +29,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  alexa_verifier
   digest
   rest-client
   sinatra
