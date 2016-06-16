@@ -23,7 +23,8 @@ post '/' do
       )
     rescue AlexaVerifier::VerificationError => e
       puts "Unable to verify request is valid and from Alexa.\n" + e.message
-      return ""
+      status 400
+      return "Invalid source or timestamp."
     end
 
     request_payload = JSON.parse raw_request
