@@ -135,8 +135,8 @@ def get_basic_info(req)
   end
 
   if subject == nil
-    no_subject_message = "I'm not sure who you're asking about. Please " +
-                         "try asking again."
+    no_subject_message = "I'm not sure who you're asking about. What else " +
+                         "would you like to know?"
     return Utils.build_res_obj(no_subject_message)
   end
 
@@ -152,7 +152,8 @@ def get_basic_info(req)
   card = { "title" => subject }
   ## No Results
   if !marvel_found && !cv_found
-    message = "I'm sorry, I could not find any information about #{subject}."
+    message = "I'm sorry, I could not find any information about #{subject}. " +
+              "What else would you like to know?"
     return Utils.build_res_obj(message)
   end
   ## Description
@@ -163,6 +164,7 @@ def get_basic_info(req)
   else
     description = "No description is available for #{subject}."
   end
+  description += " What else would you like to know?"
   ## Attribution
   card["attribution"] = "Sources:\n"
   if marvel_found
@@ -462,7 +464,7 @@ def yes_intent(req)
     message = "What would you like to know?"
     return Utils.build_res_obj(message, sess_attr)
   else
-    speech_text = sess_attr["extraInfo"]
+    speech_text = sess_attr["extraInfo"] + " What else would you like to know?"
     sess_attr["extraInfo"] = nil
     return Utils.build_res_obj(speech_text, sess_attr)
   end

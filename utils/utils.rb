@@ -3,8 +3,8 @@ module Utils
     subject, resource_type = Utils.determine_subject(req)
 
     if subject == nil
-      no_subject_message = "I'm not sure what you're asking about. Please " +
-                           "try asking again."
+      no_subject_message = "I'm not sure what you're asking about. " +
+                           "What else would you like to know?"
       return Utils.build_res_obj(no_subject_message)
     end
 
@@ -49,12 +49,17 @@ module Utils
 
     if !cv_found || cv_res[attr] == nil
       message = not_found_mess.call(sub_to_pass, resource_type)
+      message += " What else would you like to know?"
       return Utils.build_res_obj(message, sessionAttributes)
     else
       message, sess_attr = found_mess.call(cv_res_to_pass, resource_type)
 
       if sess_attr != nil
         sessionAttributes = sessionAttributes.merge(sess_attr)
+      end
+
+      if sessionAttributes["extraInfo"] == nil
+        message += " What else would you like to know?"
       end
 
       return Utils.build_res_obj(message, sessionAttributes)
