@@ -164,7 +164,6 @@ def get_basic_info(req)
   else
     description = "No description is available for #{subject}."
   end
-  description += " What else would you like to know?"
   ## Attribution
   card["attribution"] = "Sources:\n"
   if marvel_found
@@ -239,6 +238,8 @@ def get_basic_info(req)
   if cv_found && cv_res.to_json.to_s.bytesize > 12000
     sessionAttributes["obj"] = nil
   end
+
+  description += " What else would you like to know?"
 
   return Utils.build_res_obj(description, sessionAttributes, card)
 end
