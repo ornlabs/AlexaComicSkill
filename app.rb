@@ -239,7 +239,7 @@ def get_basic_info(req)
     sessionAttributes["obj"] = nil
   end
 
-  description += " What else would you like to know?"
+  description += ". What else would you like to know?"
 
   return Utils.build_res_obj(description, sessionAttributes, card)
 end
