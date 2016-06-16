@@ -479,11 +479,11 @@ end
 def help_intent(req)
   message = "You can ask questions and make requests like: " +
     "Who is Captain America? " +
-    "Tell me about Gotham. " +
+    "Tell me about Metropolis. " +
     "When was Spider Man born? " +
     "What are some aliases for Black Widow? " +
     "What was the first appearance of the X-Men? or " +
-    "How many comic books has Superman appeared in? " +
+    "How many comic books has Batman appeared in? " +
     "So, what would you like to know?"
   return Utils.build_res_obj(message)
 end
