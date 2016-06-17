@@ -21,7 +21,7 @@ post '/' do
         env["HTTP_SIGNATURE"],
         raw_request
       )
-    rescue AlexaVerifier::VerificationError => e
+    rescue => e
       puts "Unable to verify request is valid and from Alexa.\n" + e.message
       status 400
       return "Invalid source or timestamp."
@@ -68,8 +68,8 @@ post '/' do
     puts "ERROR\n" + e.message
     puts e.backtrace
 
-    message = "I'm sorry, there was an error in this skill. Good-bye!"
-    return Utils.build_end_res_obj(message)
+    status 500
+    return "Error!"
   end
 end
 
